@@ -34,7 +34,7 @@ const faqs = [
   },
   {
     q: "Puis-je résilier ?",
-    a: "Oui, à tout moment. L'adhésion Essentiel est sans engagement, résiliable depuis votre espace membre.",
+    a: "Oui, à tout moment. L'adhésion Pro est sans engagement, résiliable depuis votre espace membre.",
   },
 ];
 
@@ -116,7 +116,7 @@ export default function CEPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <img src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png" alt="FNAE" className="h-14 w-auto" />
           <a
-            href={LINKS.essentielAnnuel}
+            href={LINKS.proAnnuel}
             onClick={trackCTA}
             style={{ backgroundColor: ORANGE }}
             className="text-white px-5 py-2 rounded text-sm font-bold hover:opacity-90 transition"
@@ -140,22 +140,25 @@ export default function CEPage() {
             {[
               "✓ Réductions exclusives chez +200 enseignes partenaires",
               "✓ Loisirs, voyages, courses, abonnements",
-              "✓ Inclus dès l'adhésion Essentiel",
             ].map((item) => (
               <span key={item} style={{ backgroundColor: BLUE_DARK }} className="text-blue-100 text-sm px-4 py-2 rounded-full">
                 {item}
               </span>
             ))}
           </div>
+          <div className="inline-flex items-baseline gap-2 mb-3">
+            <span style={{ color: ORANGE }} className="text-6xl sm:text-7xl font-extrabold leading-none">64 €</span>
+            <span className="text-white text-xl font-semibold">/ an</span>
+          </div>
+          <p className="text-blue-100 text-sm mb-7">soit seulement <span className="font-bold text-white">5,33 € / mois</span> · sans engagement</p>
           <a
-            href={LINKS.essentielAnnuel}
+            href={LINKS.proAnnuel}
             onClick={trackCTA}
             style={{ backgroundColor: ORANGE }}
             className="inline-block text-white font-bold px-8 py-4 rounded text-lg transition hover:opacity-90"
           >
             Activer mes avantages →
           </a>
-          <p className="mt-4 text-blue-200 text-sm">À partir de 15 € / an · soit 1,25 € / mois</p>
         </div>
       </section>
 
@@ -266,10 +269,10 @@ export default function CEPage() {
           <div className="mt-8 text-center">
             <p className="text-gray-500 text-lg mb-4">
               Avec la FNAE, vous récupérez tout ça.{" "}
-              <strong style={{ color: BLUE }}>Dès 15 € / an.</strong>
+              <strong style={{ color: BLUE }}>Dès 64 € / an.</strong>
             </p>
             <a
-              href={LINKS.essentielAnnuel}
+              href={LINKS.proAnnuel}
               onClick={trackCTA}
               style={{ backgroundColor: ORANGE }}
               className="inline-block text-white font-bold px-8 py-3 rounded-lg transition hover:opacity-90"
@@ -382,7 +385,7 @@ export default function CEPage() {
               </blockquote>
               <div>
                 <p className="font-semibold text-gray-900 text-sm">Julie B.</p>
-                <p className="text-gray-400 text-xs">Coach sportive, Marseille · Adhérente Essentiel</p>
+                <p className="text-gray-400 text-xs">Coach sportive, Marseille · Adhérente Pro</p>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm flex flex-col gap-4">
@@ -579,14 +582,6 @@ export default function CEPage() {
             </div>
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              Vous voulez juste les réductions CE ?{" "}
-              <a href={LINKS.essentielAnnuel} onClick={trackCTA} style={{ color: BLUE }} className="font-semibold hover:underline">
-                Découvrez l'offre Essentiel à 15 €/an →
-              </a>
-            </p>
-          </div>
         </div>
       </section>
 
@@ -606,9 +601,9 @@ export default function CEPage() {
       <section style={{ backgroundColor: BLUE }} className="py-16 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Rattrapez les avantages que votre statut ne vous donne pas.</h2>
-          <p className="text-blue-100 text-lg mb-8">15 € par an pour reprendre ce qui vous est dû.</p>
+          <p className="text-blue-100 text-lg mb-8">64 € par an pour reprendre ce qui vous est dû.</p>
           <a
-            href={LINKS.essentielAnnuel}
+            href={LINKS.proAnnuel}
             onClick={trackCTA}
             style={{ backgroundColor: ORANGE }}
             className="inline-block text-white font-bold px-8 py-4 rounded text-lg hover:opacity-90 transition"
