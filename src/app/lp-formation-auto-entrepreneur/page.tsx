@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // ─── Palette FNAE Academy ─────────────────────────────────────────────────
 const BLUE = "#0E6DAA";
@@ -9,6 +9,8 @@ const CORAL = "#ED6952";
 const CREAM = "#F5F2EC";
 const BG_LIGHT = "#F5F8FB";
 const BG_MEDIUM = "#E8F2FA";
+
+const CALENDLY_URL = "https://calendly.com/fnaeacademy/preparez-votre-formation";
 
 // ─── Tracking dataLayer ───────────────────────────────────────────────────
 function pushEvent(name: string, params?: Record<string, unknown>) {
@@ -139,10 +141,6 @@ const FAQS = [
     a: "L'URSSAF, la CCI ou France Num proposent de l'information générale. La FNAE Academy propose un accompagnement structuré, avec ateliers, suivi individuel et livret personnalisé. Vous ne sortez pas avec des notes mais avec une feuille de route opérationnelle pour votre situation.",
   },
   {
-    q: "Pourquoi pas une formation certifiante CPF ?",
-    a: "Notre choix : être la formation la plus pointue sur le régime micro-entreprise, et non une formation générique de création d'entreprise. La certification RS7005 vise un diplôme. Notre formation vise une compétence opérationnelle. Si votre objectif est de gérer votre micro sans erreur (pas d'ajouter un diplôme à votre CV), nous sommes le bon choix.",
-  },
-  {
     q: "Combien de temps me prendra la formation ?",
     a: "La formation est modulable. Vous pouvez la suivre en 3 jours pleins, en 6 demi-journées, ou en format individuel adapté à votre rythme. À distance ou en présentiel.",
   },
@@ -186,411 +184,27 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── Formulaire court — Voir le programme ─────────────────────────────────
-function ShortFormModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({
-    prenom: "",
-    nom: "",
-    email: "",
-    telephone: "",
-    statut: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const url = process.env.NEXT_PUBLIC_WEBHOOK_SHORT;
-      if (url) {
-        await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, source: "voir_programme", page: "lp-formation-ae" }),
-        });
-      }
-    } catch {
-      // silencieux — l'événement tracking est envoyé dans tous les cas
-    }
-    pushEvent("Lead", { content_name: "formation_ae", form_type: "voir_programme" });
-    setLoading(false);
-    setSubmitted(true);
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Voir le programme"
-    >
-      <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl leading-none w-8 h-8 flex items-center justify-center"
-          aria-label="Fermer"
-        >
-          ×
-        </button>
-
-        {submitted ? (
-          <div className="text-center py-8">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold"
-              style={{ backgroundColor: BG_MEDIUM, color: BLUE }}
-            >
-              ✓
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Merci !</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Vous recevrez le programme détaillé de la formation par e-mail. Un conseiller FNAE Academy vous contactera rapidement pour répondre à vos questions.
-            </p>
-          </div>
-        ) : (
-          <>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">Voir le programme</h3>
-            <p className="text-gray-500 text-sm mb-6">
-              Recevez le programme complet et bénéficiez d'un appel conseil gratuit.
-            </p>
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="sf-prenom" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Prénom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="sf-prenom"
-                    type="text"
-                    required
-                    autoComplete="given-name"
-                    value={form.prenom}
-                    onChange={(e) => setForm((f) => ({ ...f, prenom: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="sf-nom" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Nom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="sf-nom"
-                    type="text"
-                    required
-                    autoComplete="family-name"
-                    value={form.nom}
-                    onChange={(e) => setForm((f) => ({ ...f, nom: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="sf-email" className="block text-xs font-semibold text-gray-700 mb-1">
-                  E-mail <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="sf-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={form.email}
-                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                />
-              </div>
-              <div>
-                <label htmlFor="sf-tel" className="block text-xs font-semibold text-gray-700 mb-1">
-                  Téléphone <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="sf-tel"
-                  type="tel"
-                  required
-                  autoComplete="tel"
-                  value={form.telephone}
-                  onChange={(e) => setForm((f) => ({ ...f, telephone: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                />
-              </div>
-              <div>
-                <label htmlFor="sf-statut" className="block text-xs font-semibold text-gray-700 mb-1">
-                  Votre situation <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="sf-statut"
-                  required
-                  value={form.statut}
-                  onChange={(e) => setForm((f) => ({ ...f, statut: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-white"
-                >
-                  <option value="">Sélectionnez...</option>
-                  <option value="porteur">Je souhaite créer ma micro-entreprise</option>
-                  <option value="installé">Déjà micro-entrepreneur en activité</option>
-                </select>
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{ backgroundColor: CORAL }}
-                className="w-full text-white font-bold py-3.5 rounded-lg hover:opacity-90 transition text-sm disabled:opacity-60 mt-2"
-              >
-                {loading ? "Envoi en cours..." : "Recevoir le programme →"}
-              </button>
-              <p className="text-xs text-center text-gray-400">
-                Données utilisées uniquement pour traiter votre demande. Conformément au RGPD.
-              </p>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Formulaire long — Vérifier mon financement ───────────────────────────
-function LongFormModal({ onClose }: { onClose: () => void }) {
-  const [form, setForm] = useState({
-    prenom: "",
-    nom: "",
-    email: "",
-    telephone: "",
-    statut: "",
-    activite: "",
-    statutActuel: "",
-    codePostal: "",
-    message: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const url = process.env.NEXT_PUBLIC_WEBHOOK_LONG;
-      if (url) {
-        await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, source: "verifier_financement", page: "lp-formation-ae" }),
-        });
-      }
-    } catch {
-      // silencieux
-    }
-    pushEvent("SubmitApplication", { content_name: "formation_ae", form_type: "verifier_financement" });
-    setLoading(false);
-    setSubmitted(true);
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Vérifier mon financement"
-    >
-      <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg p-6 sm:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-3xl leading-none w-8 h-8 flex items-center justify-center"
-          aria-label="Fermer"
-        >
-          ×
-        </button>
-
-        {submitted ? (
-          <div className="text-center py-8">
-            <div
-              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold"
-              style={{ backgroundColor: BG_MEDIUM, color: BLUE }}
-            >
-              ✓
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-3">Demande reçue !</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Un conseiller FNAE Academy vous contacte sous 24h ouvrées pour étudier votre situation de financement et vous guider dans le montage du dossier.
-            </p>
-          </div>
-        ) : (
-          <>
-            <h3 className="text-xl font-bold text-gray-900 mb-1">Vérifier mon financement</h3>
-            <p className="text-gray-500 text-sm mb-6">
-              Nos conseillers étudient votre éligibilité FIF-PL, AGEFICE, FAFCEA ou France Travail et vous accompagnent dans le montage du dossier.
-            </p>
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="lf-prenom" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Prénom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="lf-prenom"
-                    type="text"
-                    required
-                    autoComplete="given-name"
-                    value={form.prenom}
-                    onChange={(e) => setForm((f) => ({ ...f, prenom: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lf-nom" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Nom <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="lf-nom"
-                    type="text"
-                    required
-                    autoComplete="family-name"
-                    value={form.nom}
-                    onChange={(e) => setForm((f) => ({ ...f, nom: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="lf-email" className="block text-xs font-semibold text-gray-700 mb-1">
-                  E-mail <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="lf-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={form.email}
-                  onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                />
-              </div>
-              <div>
-                <label htmlFor="lf-tel" className="block text-xs font-semibold text-gray-700 mb-1">
-                  Téléphone <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="lf-tel"
-                  type="tel"
-                  required
-                  autoComplete="tel"
-                  value={form.telephone}
-                  onChange={(e) => setForm((f) => ({ ...f, telephone: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="lf-activite" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Type d'activité <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="lf-activite"
-                    required
-                    value={form.activite}
-                    onChange={(e) => setForm((f) => ({ ...f, activite: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-white"
-                  >
-                    <option value="">Sélectionnez...</option>
-                    <option value="liberale">Profession libérale (BNC)</option>
-                    <option value="commerce">Commerce / services (BIC)</option>
-                    <option value="artisan">Artisanat</option>
-                    <option value="autre">Autre</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="lf-statut-actuel" className="block text-xs font-semibold text-gray-700 mb-1">
-                    Statut actuel <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    id="lf-statut-actuel"
-                    required
-                    value={form.statutActuel}
-                    onChange={(e) => setForm((f) => ({ ...f, statutActuel: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 bg-white"
-                  >
-                    <option value="">Sélectionnez...</option>
-                    <option value="createur">En cours de création</option>
-                    <option value="micro">Micro-entrepreneur en activité</option>
-                    <option value="demandeur">Demandeur d'emploi</option>
-                    <option value="salarie">Salarié(e)</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label htmlFor="lf-cp" className="block text-xs font-semibold text-gray-700 mb-1">
-                  Code postal <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="lf-cp"
-                  type="text"
-                  required
-                  autoComplete="postal-code"
-                  inputMode="numeric"
-                  maxLength={5}
-                  value={form.codePostal}
-                  onChange={(e) => setForm((f) => ({ ...f, codePostal: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400"
-                />
-              </div>
-              <div>
-                <label htmlFor="lf-message" className="block text-xs font-semibold text-gray-700 mb-1">
-                  Message (optionnel)
-                </label>
-                <textarea
-                  id="lf-message"
-                  rows={3}
-                  value={form.message}
-                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-400 resize-none"
-                  placeholder="Précisez votre situation si vous le souhaitez..."
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                style={{ backgroundColor: BLUE }}
-                className="w-full text-white font-bold py-3.5 rounded-lg hover:opacity-90 transition text-sm disabled:opacity-60 mt-2"
-              >
-                {loading ? "Envoi en cours..." : "Vérifier mon financement →"}
-              </button>
-              <p className="text-xs text-center text-gray-400">
-                Données utilisées uniquement pour traiter votre demande. Conformément au RGPD.
-              </p>
-            </form>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ─── Page principale ──────────────────────────────────────────────────────
 export default function FormationAutoEntrepreneurPage() {
-  const [modal, setModal] = useState<null | "short" | "long">(null);
   const contentViewedRef = useRef(false);
 
-  // PageView + scroll tracking
+  // PageView + scroll tracking + Calendly assets + Calendly event listener
   useEffect(() => {
     pushEvent("PageView");
+
+    // Charger les assets Calendly
+    if (!document.querySelector('link[href*="calendly.com/assets/external/widget.css"]')) {
+      const link = document.createElement("link");
+      link.href = "https://assets.calendly.com/assets/external/widget.css";
+      link.rel = "stylesheet";
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[src*="calendly.com/assets/external/widget.js"]')) {
+      const script = document.createElement("script");
+      script.src = "https://assets.calendly.com/assets/external/widget.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
 
     const handleScroll = () => {
       if (contentViewedRef.current) return;
@@ -602,13 +216,46 @@ export default function FormationAutoEntrepreneurPage() {
       }
     };
 
+    // Tracking Calendly : tous les events postMessage → dataLayer
+    // event_scheduled (= RDV pris) → event Meta "Schedule" de conversion
+    const handleMessage = (e: MessageEvent) => {
+      if (typeof e.data !== "object" || !e.data) return;
+      const evt = (e.data as { event?: string }).event;
+      if (typeof evt !== "string" || evt.indexOf("calendly") !== 0) return;
+
+      const calendlyEvent = evt.split(".")[1];
+
+      pushEvent("calendly", { calendly_event: calendlyEvent });
+
+      if (calendlyEvent === "event_scheduled") {
+        // Event standard Meta pour une prise de rendez-vous
+        pushEvent("Schedule", {
+          content_name: "formation_ae",
+          source: "calendly",
+        });
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
-  const openShort = () => setModal("short");
-  const openLong = () => setModal("long");
-  const closeModal = () => setModal(null);
+  const openCalendly = () => {
+    pushEvent("Lead", { content_name: "formation_ae", form_type: "calendly_popup" });
+    const w = window as unknown as {
+      Calendly?: { initPopupWidget: (opts: { url: string }) => void };
+    };
+    if (w.Calendly) {
+      w.Calendly.initPopupWidget({ url: CALENDLY_URL });
+    } else {
+      // Fallback : ouvrir le calendrier dans un nouvel onglet si le script n'a pas chargé
+      window.open(CALENDLY_URL, "_blank", "noopener");
+    }
+  };
 
   const trackPhoneClick = () => {
     pushEvent("Contact", { content_name: "formation_ae", contact_type: "phone" });
@@ -629,11 +276,11 @@ export default function FormationAutoEntrepreneurPage() {
             className="h-10 w-auto"
           />
           <button
-            onClick={openShort}
+            onClick={openCalendly}
             style={{ backgroundColor: CORAL }}
             className="text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition hidden sm:block"
           >
-            Voir le programme
+            Valider mon financement
           </button>
         </div>
       </header>
@@ -648,7 +295,7 @@ export default function FormationAutoEntrepreneurPage() {
             className="text-xs font-bold uppercase tracking-widest mb-6 inline-block px-3 py-1 rounded-full"
             style={{ backgroundColor: "rgba(255,255,255,0.12)", color: "#A8CCE8" }}
           >
-            Formation certifiée Qualiopi · Finançable par votre fonds professionnel
+            Formation certifiée Qualiopi
           </p>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-5">
             Maîtrisez votre micro-entreprise.{" "}
@@ -658,19 +305,13 @@ export default function FormationAutoEntrepreneurPage() {
           <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
             La formation de la Fédération Nationale des Auto-Entrepreneurs, la seule organisation reconnue représentative au niveau national. Pour ne plus jamais subir l'administratif.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex justify-center">
             <button
-              onClick={openShort}
+              onClick={openCalendly}
               style={{ backgroundColor: CORAL }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
-              Voir le programme
-            </button>
-            <button
-              onClick={openLong}
-              className="text-white font-semibold px-8 py-4 rounded text-base border border-white/40 hover:border-white/70 transition"
-            >
-              Vérifier mon financement
+              Valider mon financement
             </button>
           </div>
           <p className="mt-5 text-blue-200 text-sm">
@@ -697,7 +338,7 @@ export default function FormationAutoEntrepreneurPage() {
             </div>
             <div className="sm:px-6">
               <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>Qualiopi</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">formation finançable par<br />votre fonds professionnel</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">certification de la qualité<br />des actions de formation</p>
             </div>
           </div>
         </div>
@@ -767,11 +408,11 @@ export default function FormationAutoEntrepreneurPage() {
           </div>
           <div className="text-center mt-10">
             <button
-              onClick={openShort}
+              onClick={openCalendly}
               style={{ backgroundColor: CORAL }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
-              Voir le programme
+              Valider mon financement
             </button>
           </div>
         </div>
@@ -812,11 +453,11 @@ export default function FormationAutoEntrepreneurPage() {
           </div>
           <div className="text-center mt-8">
             <button
-              onClick={openShort}
+              onClick={openCalendly}
               style={{ backgroundColor: BLUE }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
-              Télécharger le programme complet
+              Valider mon financement
             </button>
           </div>
         </div>
@@ -962,18 +603,16 @@ export default function FormationAutoEntrepreneurPage() {
             Rejoignez les milliers d'auto-entrepreneurs qui ont arrêté de patauger, et qui se forment avec la fédération qui les défend.
           </p>
           <button
-            onClick={openShort}
+            onClick={openCalendly}
             style={{ backgroundColor: CORAL }}
             className="inline-block text-white font-bold px-10 py-4 rounded text-base hover:opacity-90 transition mb-6"
           >
-            Voir le programme et m'inscrire
+            Valider mon financement
           </button>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-blue-200 text-xs sm:text-sm">
             <span>Formation certifiée Qualiopi</span>
             <span>·</span>
             <span>Animée par les formateurs experts de la FNAE</span>
-            <span>·</span>
-            <span>Finançable par votre fonds professionnel</span>
             <span>·</span>
             <span>9,8/10 de note apprenants</span>
             <span>·</span>
@@ -1021,17 +660,13 @@ export default function FormationAutoEntrepreneurPage() {
         style={{ backgroundColor: NAVY }}
       >
         <button
-          onClick={openShort}
+          onClick={openCalendly}
           style={{ backgroundColor: CORAL }}
           className="w-full text-white font-bold py-3.5 rounded text-sm hover:opacity-90 transition"
         >
-          Voir le programme
+          Valider mon financement
         </button>
       </div>
-
-      {/* ── Modaux ───────────────────────────────────────────────────────── */}
-      {modal === "short" && <ShortFormModal onClose={closeModal} />}
-      {modal === "long" && <LongFormModal onClose={closeModal} />}
     </div>
   );
 }
