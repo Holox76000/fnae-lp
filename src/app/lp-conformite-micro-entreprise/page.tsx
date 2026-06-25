@@ -132,7 +132,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 }
 
 function PricingCard({ plan }: { plan: typeof pricingPlans[number] }) {
-  const [annual, setAnnual] = useState(false);
+  const [annual, setAnnual] = useState(true);
   return (
     <div
       style={plan.popular ? { backgroundColor: BLUE } : undefined}

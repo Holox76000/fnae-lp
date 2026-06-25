@@ -88,8 +88,8 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function CEPage() {
-  const [proAnnual, setProAnnual] = useState(false);
-  const [premiumAnnual, setPremiumAnnual] = useState(false);
+  const [proAnnual, setProAnnual] = useState(true);
+  const [premiumAnnual, setPremiumAnnual] = useState(true);
 
   useEffect(() => {
     const w = window as any;
@@ -522,6 +522,7 @@ export default function CEPage() {
               <div className="px-7 pb-7">
                 <a
                   href={proAnnual ? LINKS.proAnnuel : LINKS.proMensuel}
+                  onClick={trackCTA}
                   style={{ backgroundColor: BLUE }}
                   className="block text-center py-3.5 rounded-xl font-bold text-white transition hover:opacity-90 text-sm"
                 >
@@ -568,6 +569,7 @@ export default function CEPage() {
               <div className="px-7 pb-7">
                 <a
                   href={premiumAnnual ? LINKS.premiumAnnuel : LINKS.premiumMensuel}
+                  onClick={trackCTA}
                   style={{ backgroundColor: ORANGE }}
                   className="block text-center py-3.5 rounded-xl font-bold text-white transition hover:opacity-90 text-sm"
                 >

@@ -61,7 +61,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 }
 
 export default function RecouvrementPage() {
-  const [annual, setAnnual] = useState(false);
+  const [annual, setAnnual] = useState(true);
 
   useEffect(() => {
     const w = window as any;
