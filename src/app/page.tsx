@@ -36,6 +36,12 @@ export default function Home() {
           >
             Formation Auto-Entrepreneur →
           </Link>
+          <Link
+            href="/lp-logiciel-facturation"
+            className="block bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-800 transition font-medium"
+          >
+            Logiciel Facturation →
+          </Link>
         </div>
       </div>
     </main>
