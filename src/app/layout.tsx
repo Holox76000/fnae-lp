@@ -40,7 +40,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {/* GTM noscript fallbacks */}
         <noscript>
           <iframe
