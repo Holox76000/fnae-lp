@@ -173,7 +173,7 @@ export default function LogicielPage() {
             <div className="flex justify-center lg:justify-start [&>div]:mb-5">
               <TrustpilotBadge />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-5">
+            <h1 className="text-3xl sm:text-4xl font-bold leading-tight mb-5">
               La facture électronique devient obligatoire. Nous vous mettons en conformité.
             </h1>
             <p className="text-base sm:text-lg text-blue-100 mb-8 max-w-xl">
