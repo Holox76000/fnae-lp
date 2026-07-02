@@ -114,17 +114,13 @@ function InvoiceMockup() {
       </div>
       <div className="border-t border-b border-gray-100 py-3 mb-3 space-y-2">
         <div className="flex justify-between text-xs">
-          <span className="text-gray-600">Prestation de conseil</span>
-          <span className="font-semibold text-gray-900">1 200,00 €</span>
-        </div>
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-600">Frais de déplacement</span>
-          <span className="font-semibold text-gray-900">120,00 €</span>
+          <span className="text-gray-600">Consultation express (30 min)</span>
+          <span className="font-semibold text-gray-900">20,00 €</span>
         </div>
       </div>
       <div className="flex justify-between items-baseline mb-4">
         <span className="text-xs font-semibold text-gray-700">Total à payer</span>
-        <span className="text-2xl font-extrabold" style={{ color: BLUE }}>1 320,00 €</span>
+        <span className="text-2xl font-extrabold" style={{ color: BLUE }}>20,00 €</span>
       </div>
       <div className="rounded-lg p-3 mb-3" style={{ backgroundColor: "#EBF5FB" }}>
         <p className="text-[10px] font-bold uppercase tracking-wider mb-0.5" style={{ color: BLUE }}>Conformité automatique</p>
