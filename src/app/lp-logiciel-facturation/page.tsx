@@ -16,7 +16,7 @@ const LINKS = {
 const faqs = [
   {
     q: "C'est quoi la facture électronique, concrètement ?",
-    a: "Ce n'est pas un PDF par e-mail. La facture électronique est un fichier structuré (Factur-X, UBL, CII) transmis via une plateforme certifiée appelée PDP (Plateforme de Dématérialisation Partenaire). Votre client la reçoit dans son propre logiciel, et l'administration fiscale en reçoit une copie. Objectif : lutter contre la fraude à la TVA et automatiser les échanges entre professionnels.",
+    a: "Ce n'est pas un PDF par e-mail. La facture électronique est un fichier structuré (Factur-X, UBL, CII) transmis via une plateforme agréée par l'État appelée PA (Plateforme Agréée). Votre client la reçoit dans son propre logiciel, et l'administration fiscale en reçoit une copie. Objectif : lutter contre la fraude à la TVA et automatiser les échanges entre professionnels.",
   },
   {
     q: "Quand est-ce obligatoire pour moi, auto-entrepreneur ?",
@@ -24,15 +24,15 @@ const faqs = [
   },
   {
     q: "Que se passe-t-il si je ne suis pas prêt ?",
-    a: "Vous ne pourrez pas recevoir les factures de vos fournisseurs ni en émettre vers vos clients pros. Côté sanctions : amende de 15 € par facture non conforme (plafonnée à 15 000 €/an) et 250 € par transmission e-reporting manquante. Surtout, vos clients professionnels ne pourront simplement plus travailler avec vous.",
+    a: "Vous ne pourrez pas recevoir les factures de vos fournisseurs ni en émettre vers vos clients pros. Côté sanctions : amende de 250 € par mois tant que vous n'êtes pas en règle. Surtout, vos clients professionnels ne pourront simplement plus travailler avec vous.",
   },
   {
-    q: "Qu'est-ce qu'une PDP et pourquoi j'en ai besoin ?",
-    a: "La PDP (Plateforme de Dématérialisation Partenaire) est le canal officiel qui transmet vos factures électroniques. Vous ne pouvez plus envoyer une facture en direct par e-mail à un client pro : elle doit passer par une PDP agréée par l'État. FNAE Gestion est connecté aux PDP agréées : aucune démarche pour vous, aucun surcoût.",
+    q: "Qu'est-ce qu'une PA et pourquoi j'en ai besoin ?",
+    a: "La PA (Plateforme Agréée) est le canal officiel qui transmet vos factures électroniques. Vous ne pouvez plus envoyer une facture en direct par e-mail à un client pro : elle doit passer par une PA agréée par l'État. FNAE Gestion est connecté aux PA : aucune démarche pour vous, aucun surcoût.",
   },
   {
     q: "FNAE Gestion est-il vraiment prêt pour la réforme ?",
-    a: "Oui. Le logiciel génère déjà aujourd'hui le format Factur-X (PDF + données structurées), gère l'archivage 10 ans, la piste d'audit fiable et la connexion aux PDP. Vous ne basculerez pas en septembre 2026 : vous y êtes déjà.",
+    a: "Oui. Le logiciel génère déjà aujourd'hui le format Factur-X (PDF + données structurées), gère l'archivage 10 ans, la piste d'audit fiable et la connexion aux PA. Vous ne basculerez pas en septembre 2026 : vous y êtes déjà.",
   },
   {
     q: "Vais-je devoir migrer mes anciennes factures ?",
@@ -44,7 +44,7 @@ const faqs = [
   },
   {
     q: "Qu'est-ce qui est inclus dans l'adhésion ?",
-    a: "Bien plus que la facture électronique. Côté facturation : logiciel FNAE Gestion conforme Factur-X, PDP intégrée, archivage 10 ans. Côté juridique : hotline avocats illimitée, génération de contrats et documents légaux, veille réglementaire. Côté avantages : CE Club +200 enseignes (cinéma, voyages, sport, streaming…). Premium ajoute : recouvrement CAARL, médiation, visios avocat.",
+    a: "Bien plus que la facture électronique. Côté facturation : logiciel FNAE Gestion conforme Factur-X, PA intégrée, archivage 10 ans. Côté juridique : hotline avocats illimitée, génération de contrats et documents légaux, veille réglementaire. Côté avantages : CE Club +200 enseignes (cinéma, voyages, sport, streaming…). Premium ajoute : recouvrement CAARL, médiation, visios avocat.",
   },
 ];
 
@@ -52,17 +52,17 @@ const testimonials = [
   {
     name: "Doriane W.",
     role: "Coiffeuse · cliente depuis 2024",
-    text: "Je ne savais même pas ce qu'était une PDP. La démo m'a tout expliqué simplement, et j'ai compris que j'étais déjà en règle pour 2026. Énorme soulagement.",
+    text: "Je ne savais même pas ce qu'était une PA. La démo m'a tout expliqué simplement, et j'ai compris que j'étais déjà en règle pour 2026. Énorme soulagement.",
   },
   {
     name: "Sophie M.",
     role: "Graphiste freelance",
-    text: "J'ai des clients qui me parlent déjà de facture électronique. Avec FNAE Gestion, j'envoie un Factur-X conforme, ils le reçoivent dans leur logiciel, c'est validé du premier coup. Gain de temps énorme.",
+    text: "Grâce à FNAE Gestion, je suis déjà en règle en prévision de septembre 2026. Aucune démarche à faire de mon côté, tout est prêt : je peux me concentrer sur mes clients l'esprit tranquille.",
   },
   {
     name: "Stéphane D.",
     role: "Freelance · clients pros",
-    text: "Le vrai sujet, c'est de ne pas se réveiller en septembre 2027 avec 15 €/facture d'amende. Là c'est fait, je suis tranquille.",
+    text: "Le vrai sujet, c'est de ne pas se réveiller en septembre 2027 avec 250 €/mois d'amende tant qu'on n'est pas en règle. Là c'est fait, je suis tranquille.",
   },
 ];
 
@@ -109,7 +109,7 @@ function InvoiceMockup() {
         <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">FACTUR-X ✓</span>
       </div>
       <div className="text-xs text-gray-500 mb-4 space-y-0.5">
-        <p>Émise via PDP agréée · 12 mars 2026</p>
+        <p>Émise via PA · 12 mars 2026</p>
         <p>Reçue par le client · 12 mars 2026, 10:42</p>
       </div>
       <div className="border-t border-b border-gray-100 py-3 mb-3 space-y-2">
@@ -209,8 +209,8 @@ export default function LogicielPage() {
               <p className="text-gray-500 text-xs mt-1">Émission obligatoire</p>
             </div>
             <div>
-              <p className="text-xl sm:text-2xl font-extrabold" style={{ color: BLUE }}>15 €</p>
-              <p className="text-gray-500 text-xs mt-1">Amende par facture non conforme</p>
+              <p className="text-xl sm:text-2xl font-extrabold" style={{ color: BLUE }}>250 €</p>
+              <p className="text-gray-500 text-xs mt-1">Amende par mois si non conforme</p>
             </div>
             <div>
               <p className="text-xl sm:text-2xl font-extrabold" style={{ color: BLUE }}>+80 000</p>
@@ -248,7 +248,7 @@ export default function LogicielPage() {
               Ce que change la facture électronique pour vous
             </h2>
             <p className="text-gray-500 text-sm sm:text-base">
-              Toutes les factures émises à un autre professionnel doivent passer par une plateforme certifiée (PDP). Un PDF par e-mail ne suffira plus.
+              Toutes les factures émises à un autre professionnel doivent passer par une plateforme agréée (PA). Un PDF par e-mail ne suffira plus.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
@@ -264,10 +264,10 @@ export default function LogicielPage() {
             </div>
             <div className="rounded-xl p-7 border-2" style={{ borderColor: "#BBF7D0", backgroundColor: "#F0FDF4" }}>
               <span className="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full mb-4">APRÈS · 2026/27</span>
-              <h3 className="font-bold text-gray-900 mb-3 text-lg">Factur-X via PDP</h3>
+              <h3 className="font-bold text-gray-900 mb-3 text-lg">Factur-X via PA</h3>
               <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex gap-2"><span className="text-green-600">✓</span> Fichier structuré (Factur-X, UBL, CII)</li>
-                <li className="flex gap-2"><span className="text-green-600">✓</span> Transmise via plateforme certifiée</li>
+                <li className="flex gap-2"><span className="text-green-600">✓</span> Transmise via plateforme agréée</li>
                 <li className="flex gap-2"><span className="text-green-600">✓</span> Reçue directement dans le logiciel du client</li>
                 <li className="flex gap-2"><span className="text-green-600">✓</span> Conforme & archivée 10 ans</li>
               </ul>
@@ -298,7 +298,7 @@ export default function LogicielPage() {
               {
                 icon: "📤",
                 title: "Prêt pour l'émission",
-                desc: "Vos factures clients passent par une PDP agréée et arrivent conformes. Aucune amende. 1ᵉʳ sept. 2027.",
+                desc: "Vos factures clients passent par une PA et arrivent conformes. Aucune amende. 1ᵉʳ sept. 2027.",
               },
               {
                 icon: "⚖️",
@@ -328,7 +328,7 @@ export default function LogicielPage() {
               {[
                 "Vous créez votre devis comme d'habitude, en 2 minutes",
                 "Le logiciel génère un Factur-X conforme (PDF + données structurées)",
-                "La facture part automatiquement via une PDP agréée par l'État",
+                "La facture part automatiquement via une PA (plateforme agréée par l'État)",
                 "Votre client la reçoit dans son propre logiciel, sans ressaisie",
                 "L'administration fiscale est informée. Archivage 10 ans, piste d'audit incluse.",
               ].map((f) => (
@@ -362,21 +362,21 @@ export default function LogicielPage() {
               {
                 date: "Aujourd'hui",
                 title: "Vous adhérez à FNAE",
-                desc: "Vous activez votre adhésion. Votre logiciel de facturation est immédiatement disponible, vos prochaines factures sortent au format Factur-X.",
+                desc: "Vous activez votre adhésion. Votre logiciel de facturation est immédiatement disponible.",
                 status: "MAINTENANT",
                 color: BLUE,
               },
               {
                 date: "1ᵉʳ sept. 2026",
                 title: "Réception obligatoire",
-                desc: "Toutes les micro-entreprises doivent pouvoir recevoir les factures électroniques de leurs fournisseurs. Vous êtes déjà connecté à une PDP.",
+                desc: "Toutes les micro-entreprises doivent pouvoir recevoir les factures électroniques de leurs fournisseurs. Vous êtes déjà connecté à une PA.",
                 status: "RÉCEPTION",
                 color: ORANGE,
               },
               {
                 date: "1ᵉʳ sept. 2027",
                 title: "Émission obligatoire",
-                desc: "Vos factures vers des professionnels doivent obligatoirement transiter par une PDP. Vous n'avez rien à changer : c'est déjà le cas.",
+                desc: "Vos factures doivent obligatoirement transiter par une PA. Vous n'avez rien à changer : c'est déjà le cas.",
                 status: "ÉMISSION",
                 color: ORANGE,
               },
@@ -418,11 +418,7 @@ export default function LogicielPage() {
             <ul className="space-y-3 text-gray-700 text-sm leading-relaxed">
               <li className="flex items-start gap-3">
                 <span className="text-red-500 font-bold flex-shrink-0">→</span>
-                <span><strong>15 €</strong> d'amende par facture non conforme (plafonné à 15 000 €/an)</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-red-500 font-bold flex-shrink-0">→</span>
-                <span><strong>250 €</strong> par e-reporting manquant</span>
+                <span><strong>250 €</strong> d'amende par mois tant que vous n'êtes pas en règle</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-red-500 font-bold flex-shrink-0">→</span>
@@ -430,7 +426,7 @@ export default function LogicielPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-red-500 font-bold flex-shrink-0">→</span>
-                <span>Plus de rattrapage possible une fois la deadline passée</span>
+                <span>Manque de crédibilité vis-à-vis de vos clients pros</span>
               </li>
             </ul>
           </div>
@@ -446,7 +442,7 @@ export default function LogicielPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-green-600 font-bold flex-shrink-0">→</span>
-                <span>Connexion aux PDP agréées : aucune démarche pour vous</span>
+                <span>Connexion aux PA : aucune démarche pour vous</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-green-600 font-bold flex-shrink-0">→</span>
@@ -513,16 +509,15 @@ export default function LogicielPage() {
             ] as const;
             const rows = [
               { label: "Logiciel de facturation FNAE Gestion", values: ["❌", "✅", "✅"] },
-              { label: "Format Factur-X (PDF + structuré)", values: ["❌", "✅", "✅"] },
-              { label: "Connexion PDP agréée incluse", values: ["❌", "✅", "✅"] },
-              { label: "Réception & émission via PDP (2026/27)", values: ["❌", "✅", "✅"] },
+              { label: "Connexion PA (plateforme agréée) incluse", values: ["❌", "✅", "✅"] },
+              { label: "Réception & émission via PA (2026/27)", values: ["❌", "✅", "✅"] },
               { label: "Archivage 10 ans & piste d'audit", values: ["⚠️ Manuel", "✅", "✅"] },
               { label: "Hotline juridique illimitée", values: ["❌", "✅", "✅"] },
               { label: "CE Club +200 enseignes", values: ["❌", "✅", "✅"] },
               { label: "Recouvrement d'impayés (CAARL)", values: ["❌", "Non", "✅"] },
               { label: "3 visios avocat / an incluses", values: ["❌", "Non", "✅"] },
               { label: "Risque d'amende au-delà de 2026", values: ["🚨 Élevé", "Aucun", "Aucun"], bold: true },
-              { label: "Tarif", values: ["Amendes 15 €/facture", "6,50 €/mois ou 64 €/an", "12 €/mois ou 139 €/an"], bold: true },
+              { label: "Tarif", values: ["Amende 250 €/mois", "6,50 €/mois ou 64 €/an", "12 €/mois ou 139 €/an"], bold: true },
             ];
             return (
               <>
@@ -641,7 +636,7 @@ export default function LogicielPage() {
               </div>
               <ul className="px-7 py-6 space-y-3.5 flex-1">
                 {[
-                  "Logiciel facturation FNAE Gestion (Factur-X + PDP)",
+                  "Logiciel facturation FNAE Gestion (Factur-X + PA)",
                   "Conformité 2026/27 incluse",
                   "Hotline juridique illimitée",
                   "CE Club +200 enseignes",
@@ -740,7 +735,7 @@ export default function LogicielPage() {
             Septembre 2026, c'est demain. Mettez-vous en règle aujourd'hui.
           </h2>
           <p className="text-blue-100 text-lg mb-8">
-            Factur-X · PDP agréée · Archivage 10 ans · Zéro amende
+            Factur-X · PA (plateforme agréée) · Archivage 10 ans · Zéro amende
           </p>
           <div className="flex justify-center mb-6">
             <a
@@ -765,7 +760,7 @@ export default function LogicielPage() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
           <div className="bg-white rounded px-3 py-1.5"><img src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png" alt="FNAE" className="h-10 w-auto" /></div>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-6 items-center">
-            <a href="tel:+33285528607" className="hover:text-white transition text-white font-medium">02 85 52 86 07</a>
+            <a href="https://support.fnae.fr" target="_blank" rel="noopener noreferrer" className="hover:text-white transition text-white font-medium">support.fnae.fr</a>
             <span className="text-white/30 hidden sm:inline">|</span>
             <a href="https://fnae.fr/mentions-legales/" className="hover:text-white transition">Mentions légales</a>
             <a href="https://fnae.fr/politique-de-confidentialite/" className="hover:text-white transition">Confidentialité</a>
