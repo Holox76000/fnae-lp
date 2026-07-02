@@ -159,6 +159,23 @@ export default function CEPage() {
           >
             Activer mes avantages →
           </a>
+
+          <div className="mt-12 pt-8 border-t border-white/15">
+            <p className="text-blue-200 text-xs uppercase tracking-widest mb-5">Vos avantages chez +200 enseignes</p>
+            <div className="bg-white rounded-2xl px-6 py-5 shadow-lg">
+              <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
+                {partners.filter((p) => p.logo).slice(0, 8).map((p) => (
+                  <img
+                    key={p.name}
+                    src={p.logo!}
+                    alt={p.name}
+                    className="h-8 sm:h-9 w-auto object-contain"
+                  />
+                ))}
+                <span className="text-gray-500 text-sm font-semibold px-3">+190 autres</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
