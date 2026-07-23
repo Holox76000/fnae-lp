@@ -19,6 +19,12 @@ function pushEvent(name: string, params?: Record<string, unknown>) {
   w.dataLayer.push({ event: name, ...params });
 }
 
+// ─── Pixel Meta (envoi direct, sans dépendre du mapping GTM) ──────────────
+function fbqTrack(name: string, params?: Record<string, unknown>) {
+  const w = window as unknown as { fbq?: (...args: unknown[]) => void };
+  if (typeof w.fbq === "function") w.fbq("track", name, params);
+}
+
 // ─── Données ──────────────────────────────────────────────────────────────
 const MODULES = [
   {
@@ -192,6 +198,25 @@ export default function FormationAutoEntrepreneurPage() {
   useEffect(() => {
     pushEvent("PageView");
 
+    // Init Pixel Meta si GTM ne l'a pas déjà chargé (même pattern que les autres LP)
+    {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      const w = window as any;
+      if (!w.fbq) {
+        const f: any = function (...args: any[]) {
+          if (f.callMethod) { f.callMethod(...args); } else { f.queue.push(args); }
+        };
+        w.fbq = w._fbq = f;
+        f.push = f; f.loaded = true; f.version = "2.0"; f.queue = [];
+        const s = document.createElement("script");
+        s.async = true; s.src = "https://connect.facebook.net/en_US/fbevents.js";
+        document.head.appendChild(s);
+        w.fbq("init", "3020497201339683");
+        w.fbq("track", "PageView");
+      }
+      /* eslint-enable @typescript-eslint/no-explicit-any */
+    }
+
     // Charger les assets Calendly
     if (!document.querySelector('link[href*="calendly.com/assets/external/widget.css"]')) {
       const link = document.createElement("link");
@@ -233,6 +258,7 @@ export default function FormationAutoEntrepreneurPage() {
           content_name: "formation_ae",
           source: "calendly",
         });
+        fbqTrack("Schedule", { content_name: "formation_ae", source: "calendly" });
       }
     };
 
