@@ -2,13 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// ─── Palette FNAE Academy ─────────────────────────────────────────────────
-const BLUE = "#0E6DAA";
-const NAVY = "#0A3D5E";
-const CORAL = "#ED6952";
-const CREAM = "#F5F2EC";
-const BG_LIGHT = "#F5F8FB";
-const BG_MEDIUM = "#E8F2FA";
+// ─── Palette FNAE (commune aux LP) ────────────────────────────────────────
+const BLUE = "#1A72B4";
+const BLUE_DARK = "#1565A0";
+const ORANGE = "#ED6952";
+const BG_LIGHT = "#F2F5F8";
+const BG_MEDIUM = "#EBF5FB";
 
 const CALENDLY_URL = "https://calendly.com/fnaeacademy/preparez-votre-formation";
 
@@ -177,7 +176,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
         <span className="font-semibold text-gray-900 text-sm sm:text-base">{q}</span>
         <span
           className="text-xl flex-shrink-0 font-bold"
-          style={{ color: CORAL }}
+          style={{ color: ORANGE }}
           aria-hidden="true"
         >
           {open ? "−" : "+"}
@@ -291,20 +290,17 @@ export default function FormationAutoEntrepreneurPage() {
     <div className="min-h-screen bg-white">
 
       {/* ── En-tête sticky ──────────────────────────────────────────────── */}
-      <header
-        className="sticky top-0 z-40 border-b border-white/10 shadow-sm"
-        style={{ backgroundColor: NAVY }}
-      >
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <img
             src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png"
-            alt="Logo FNAE"
-            className="h-10 w-auto"
+            alt="FNAE"
+            className="h-14 w-auto"
           />
           <button
             onClick={openCalendly}
-            style={{ backgroundColor: CORAL }}
-            className="text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition hidden sm:block"
+            style={{ backgroundColor: ORANGE }}
+            className="text-white px-5 py-2 rounded text-sm font-bold hover:opacity-90 transition"
           >
             Valider mon financement
           </button>
@@ -314,7 +310,7 @@ export default function FormationAutoEntrepreneurPage() {
       {/* ── 1. HERO ──────────────────────────────────────────────────────── */}
       <section
         className="text-white py-16 sm:py-24 px-4 sm:px-6"
-        style={{ backgroundColor: NAVY }}
+        style={{ backgroundColor: BLUE }}
       >
         <div className="max-w-4xl mx-auto text-center">
           <p
@@ -334,7 +330,7 @@ export default function FormationAutoEntrepreneurPage() {
           <div className="flex justify-center">
             <button
               onClick={openCalendly}
-              style={{ backgroundColor: CORAL }}
+              style={{ backgroundColor: ORANGE }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
               Valider mon financement
@@ -371,7 +367,7 @@ export default function FormationAutoEntrepreneurPage() {
       </section>
 
       {/* ── 3. DOULEUR AGITÉE ────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: CREAM }}>
+      <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_MEDIUM }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
@@ -390,7 +386,7 @@ export default function FormationAutoEntrepreneurPage() {
                 <div className="flex items-start gap-3">
                   <div
                     className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                    style={{ backgroundColor: CORAL }}
+                    style={{ backgroundColor: ORANGE }}
                     aria-hidden="true"
                   />
                   <div>
@@ -435,7 +431,7 @@ export default function FormationAutoEntrepreneurPage() {
           <div className="text-center mt-10">
             <button
               onClick={openCalendly}
-              style={{ backgroundColor: CORAL }}
+              style={{ backgroundColor: ORANGE }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
               Valider mon financement
@@ -502,7 +498,7 @@ export default function FormationAutoEntrepreneurPage() {
               <div
                 key={item.label}
                 className={`rounded-xl p-6 border ${item.highlight ? "border-0" : "border-gray-200"}`}
-                style={item.highlight ? { backgroundColor: NAVY } : undefined}
+                style={item.highlight ? { backgroundColor: BLUE_DARK } : undefined}
               >
                 <h3
                   className={`font-bold text-base sm:text-lg mb-2 ${item.highlight ? "text-white" : "text-gray-900"}`}
@@ -594,7 +590,7 @@ export default function FormationAutoEntrepreneurPage() {
               >
                 <h3
                   className="font-bold text-base mb-2"
-                  style={{ color: NAVY }}
+                  style={{ color: BLUE_DARK }}
                 >
                   {item.title}
                 </h3>
@@ -620,7 +616,7 @@ export default function FormationAutoEntrepreneurPage() {
       </section>
 
       {/* ── 11. CTA FINAL + RÉASSURANCE ──────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 text-white" style={{ backgroundColor: NAVY }}>
+      <section className="py-16 sm:py-20 px-4 sm:px-6 text-white" style={{ backgroundColor: BLUE_DARK }}>
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-4xl font-bold mb-4">
             Prêt à ne plus subir l'administratif ?
@@ -630,7 +626,7 @@ export default function FormationAutoEntrepreneurPage() {
           </p>
           <button
             onClick={openCalendly}
-            style={{ backgroundColor: CORAL }}
+            style={{ backgroundColor: ORANGE }}
             className="inline-block text-white font-bold px-10 py-4 rounded text-base hover:opacity-90 transition mb-6"
           >
             Valider mon financement
@@ -683,11 +679,11 @@ export default function FormationAutoEntrepreneurPage() {
 
       {/* ── Barre sticky mobile (CTA bas de page) ────────────────────────── */}
       <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t border-white/10 p-3"
-        style={{ backgroundColor: NAVY }}
+        style={{ backgroundColor: BLUE_DARK }}
       >
         <button
           onClick={openCalendly}
-          style={{ backgroundColor: CORAL }}
+          style={{ backgroundColor: ORANGE }}
           className="w-full text-white font-bold py-3.5 rounded text-sm hover:opacity-90 transition"
         >
           Valider mon financement
