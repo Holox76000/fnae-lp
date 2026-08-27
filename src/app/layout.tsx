@@ -40,8 +40,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
         {/* Microsoft Clarity */}
+        {/* id ≠ "clarity" : un id d'élément devient une globale window.clarity
+            qui masque la fonction stub et casse le chargement du script */}
         <Script
-          id="clarity"
+          id="ms-clarity-loader"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(c,l,a,r,i,t,y){
