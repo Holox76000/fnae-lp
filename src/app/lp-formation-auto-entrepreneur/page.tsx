@@ -107,7 +107,7 @@ const DIFFERENTIATORS = [
   },
   {
     label: "Pas un gourou. Une fédération.",
-    desc: "Pas de promesse de richesse facile. Pas de programme à 5 000 €. Une formation institutionnelle, sérieuse, certifiée Qualiopi, animée par des formateurs experts du régime.",
+    desc: "Pas de promesse de richesse facile. Pas de programme à 5 000 €. Une formation institutionnelle, sérieuse, dispensée par un organisme certifié Qualiopi, animée par des formateurs experts du régime.",
     highlight: false,
   },
 ];
@@ -317,7 +317,7 @@ export default function FormationAutoEntrepreneurPage() {
             className="text-xs font-bold uppercase tracking-widest mb-6 inline-block px-3 py-1 rounded-full"
             style={{ backgroundColor: "rgba(255,255,255,0.12)", color: "#A8CCE8" }}
           >
-            Formation certifiée Qualiopi
+            Dispensée par un organisme de formation certifié Qualiopi
           </p>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-5">
             Maîtrisez votre micro-entreprise.{" "}
@@ -359,8 +359,8 @@ export default function FormationAutoEntrepreneurPage() {
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">note moyenne apprenants<br />100% recommandent</p>
             </div>
             <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>Qualiopi</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">certification de la qualité<br />des actions de formation</p>
+              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>Certifié Qualiopi</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br />au titre des actions de formation</p>
             </div>
           </div>
         </div>
@@ -490,7 +490,7 @@ export default function FormationAutoEntrepreneurPage() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Pourquoi se former avec la FNAE plutôt qu'avec un autre organisme ?
+              Pourquoi se former avec la FNAE ACADEMY plutôt qu'avec un autre organisme ?
             </h2>
           </div>
           <div className="space-y-4">
@@ -632,7 +632,7 @@ export default function FormationAutoEntrepreneurPage() {
             Valider mon financement
           </button>
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-blue-200 text-xs sm:text-sm">
-            <span>Formation certifiée Qualiopi</span>
+            <span>Dispensée par un organisme de formation certifié Qualiopi</span>
             <span>·</span>
             <span>Animée par les formateurs experts de la FNAE</span>
             <span>·</span>
@@ -669,7 +669,7 @@ export default function FormationAutoEntrepreneurPage() {
             <a href="/contact" className="hover:text-white transition">Contact</a>
           </div>
           <p className="text-center leading-relaxed max-w-3xl mx-auto">
-            SAS FNAE Academy · Déclaration d'activité enregistrée sous le numéro 11788786378 auprès du préfet de région d'Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l'État · Formation certifiée Qualiopi au titre des actions de formation · Formations adaptées aux handicaps.
+            SAS FNAE Academy · Déclaration d'activité enregistrée sous le numéro 11788786378 auprès du préfet de région d'Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l'État · FNAE Academy est certifiée Qualiopi. La certification qualité a été délivrée au titre de la catégorie d'actions suivante : actions de formation (<a href="https://www.formation-autoentrepreneur.fr/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition">voir le certificat sur le site de FNAE Academy</a>) · Formations adaptées aux handicaps.
           </p>
           <p className="text-center text-white/40">
             © 2009 – 2026 FNAE Academy
