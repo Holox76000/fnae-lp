@@ -347,20 +347,20 @@ export default function FormationAutoEntrepreneurPage() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x sm:divide-gray-200 text-center">
             <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>85 000</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>85 000</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">auto-entrepreneurs<br />nous font confiance</p>
             </div>
             <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>Depuis 2009</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>Depuis 2009</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">la seule fédération<br />représentative au niveau national</p>
             </div>
             <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>9,8/10</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>9,8/10</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">note moyenne apprenants<br />100% recommandent</p>
             </div>
             <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold" style={{ color: BLUE }}>Certifié Qualiopi</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br />au titre des actions de formation</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>Certifié Qualiopi</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br className="hidden sm:inline" /> au titre des actions de formation</p>
             </div>
           </div>
         </div>
@@ -631,13 +631,10 @@ export default function FormationAutoEntrepreneurPage() {
           >
             Valider mon financement
           </button>
-          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-blue-200 text-xs sm:text-sm">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-y-1.5 sm:gap-x-8 sm:gap-y-2 text-blue-200 text-xs sm:text-sm">
             <span>Dispensée par un organisme de formation certifié Qualiopi</span>
-            <span>·</span>
             <span>Animée par les formateurs experts de la FNAE</span>
-            <span>·</span>
             <span>9,8/10 de note apprenants</span>
-            <span>·</span>
             <span>100% recommandent</span>
           </div>
           <p className="mt-8 text-blue-300 text-sm">
@@ -656,7 +653,7 @@ export default function FormationAutoEntrepreneurPage() {
 
       {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer
-        className="py-10 px-4 sm:px-6 text-white/60 text-xs"
+        className="pt-10 pb-28 sm:pb-10 px-4 sm:px-6 text-white/60 text-xs"
         style={{ backgroundColor: "#061F30" }}
       >
         <div className="max-w-6xl mx-auto space-y-4">
