@@ -10,6 +10,8 @@ const BG_LIGHT = "#F2F5F8";
 const BG_MEDIUM = "#EBF5FB";
 
 const CALENDLY_URL = "https://calendly.com/fnaeacademy/preparez-votre-formation";
+const QUALIOPI_CERT_URL =
+  "https://www.formation-autoentrepreneur.fr/wp-content/uploads/2025/08/Reedition-certificat-nveau-NDA-08-2025-FNAE-ACADEMY.pdf";
 
 // ─── Tracking dataLayer ───────────────────────────────────────────────────
 function pushEvent(name: string, params?: Record<string, unknown>) {
@@ -53,7 +55,7 @@ const MODULES = [
   },
   {
     num: "06",
-    title: "Outils, méthodes et bonne hygiène administrative.",
+    title: "Outils, méthodes et bon suivi administratif.",
     desc: "Routines, outils, plateforme FNAE Gestion, accès au groupe adhérents.",
   },
 ];
@@ -147,7 +149,7 @@ const FAQS = [
   },
   {
     q: "Combien de temps me prendra la formation ?",
-    a: "La formation est modulable. Vous pouvez la suivre en 3 jours pleins, en 6 demi-journées, ou en format individuel adapté à votre rythme. À distance ou en présentiel.",
+    a: "La formation dure 7h30 au total, en collectif. Vous pouvez la suivre en une journée ou en deux demi-journées. 100% à distance.",
   },
   {
     q: "Quel est mon délai d'accès ?",
@@ -313,12 +315,6 @@ export default function FormationAutoEntrepreneurPage() {
         style={{ backgroundColor: BLUE }}
       >
         <div className="max-w-4xl mx-auto text-center">
-          <p
-            className="text-xs font-bold uppercase tracking-widest mb-6 inline-block px-3 py-1 rounded-full"
-            style={{ backgroundColor: "rgba(255,255,255,0.12)", color: "#A8CCE8" }}
-          >
-            Dispensée par un organisme de formation certifié Qualiopi
-          </p>
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-5">
             Maîtrisez votre micro-entreprise.{" "}
             <br className="hidden sm:block" />
@@ -337,7 +333,7 @@ export default function FormationAutoEntrepreneurPage() {
             </button>
           </div>
           <p className="mt-5 text-blue-200 text-sm">
-            À distance ou présentiel · Animée par les formateurs de la FNAE · Note 9,8/10
+            100% à distance · Animée par les formateurs de la FNAE · Note 9,8/10
           </p>
         </div>
       </section>
@@ -345,22 +341,31 @@ export default function FormationAutoEntrepreneurPage() {
       {/* ── 2. BAR D'AUTORITÉ ────────────────────────────────────────────── */}
       <section className="bg-white border-b border-gray-100 py-8 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x sm:divide-gray-200 text-center">
-            <div className="sm:px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-gray-200 text-center">
+            <div className="lg:px-6">
               <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>85 000</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">auto-entrepreneurs<br />nous font confiance</p>
             </div>
-            <div className="sm:px-6">
+            <div className="lg:px-6">
               <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>Depuis 2009</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">la seule fédération<br />représentative au niveau national</p>
             </div>
-            <div className="sm:px-6">
+            <div className="lg:px-6">
               <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>9,8/10</p>
               <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">note moyenne apprenants<br />100% recommandent</p>
             </div>
-            <div className="sm:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>Certifié Qualiopi</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br className="hidden sm:inline" /> au titre des actions de formation</p>
+            <div className="lg:px-6">
+              <p className="text-base min-[375px]:text-xl sm:text-3xl lg:text-2xl font-extrabold leading-tight whitespace-nowrap min-h-[60px] sm:min-h-[75px] flex items-center justify-center" style={{ color: BLUE }}>Certifié Qualiopi</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br className="hidden lg:inline" /> au titre des actions de formation</p>
+              <a
+                href={QUALIOPI_CERT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-1 text-xs underline underline-offset-2 hover:opacity-80 transition"
+                style={{ color: BLUE }}
+              >
+                Voir le certificat
+              </a>
             </div>
           </div>
         </div>
@@ -448,7 +453,7 @@ export default function FormationAutoEntrepreneurPage() {
               Devenir un auto-entrepreneur serein
             </h2>
             <p className="text-gray-500 text-base">
-              6 modules de 3h30, animés par des experts du régime micro.
+              6 modules, 7h30 au total, animés par des experts du régime micro.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -568,11 +573,11 @@ export default function FormationAutoEntrepreneurPage() {
             {[
               {
                 title: "Durée",
-                desc: "6 modules de 3h30, en collectif ou en individuel sur mesure.",
+                desc: "7h30 de formation en collectif, réparties en 6 modules.",
               },
               {
                 title: "Format",
-                desc: "À distance ou en présentiel. En collectif (3 jours ou 6 demi-journées) ou en individuel sur mesure.",
+                desc: "100% à distance, en collectif : une journée ou deux demi-journées.",
               },
               {
                 title: "Animation",
@@ -666,7 +671,7 @@ export default function FormationAutoEntrepreneurPage() {
             <a href="/contact" className="hover:text-white transition">Contact</a>
           </div>
           <p className="text-center leading-relaxed max-w-3xl mx-auto">
-            SAS FNAE Academy · Déclaration d'activité enregistrée sous le numéro 11788786378 auprès du préfet de région d'Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l'État · FNAE Academy est certifiée Qualiopi. La certification qualité a été délivrée au titre de la catégorie d'actions suivante : actions de formation (<a href="https://www.formation-autoentrepreneur.fr/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition">voir le certificat sur le site de FNAE Academy</a>) · Formations adaptées aux handicaps.
+            SAS FNAE Academy · Déclaration d'activité enregistrée sous le numéro 11788786378 auprès du préfet de région d'Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l'État · FNAE Academy est certifiée Qualiopi. La certification qualité a été délivrée au titre de la catégorie d'actions suivante : actions de formation (<a href={QUALIOPI_CERT_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition">voir le certificat Qualiopi</a>) · Formations adaptées aux handicaps.
           </p>
           <p className="text-center text-white/40">
             © 2009 – 2026 FNAE Academy
