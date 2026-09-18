@@ -21,17 +21,9 @@ function pushEvent(name: string, params?: Record<string, unknown>) {
 }
 
 // ─── Pixel Meta (envoi direct, sans dépendre du mapping GTM) ──────────────
-// eventID : clé de déduplication avec l'event envoyé par la Conversions API
-// (netlify/functions/calendly-webhook.mts) pour le même RDV.
-function fbqTrack(
-  name: string,
-  params?: Record<string, unknown>,
-  eventID?: string,
-) {
+function fbqTrack(name: string, params?: Record<string, unknown>) {
   const w = window as unknown as { fbq?: (...args: unknown[]) => void };
-  if (typeof w.fbq !== "function") return;
-  if (eventID) w.fbq("track", name, params, { eventID });
-  else w.fbq("track", name, params);
+  if (typeof w.fbq === "function") w.fbq("track", name, params);
 }
 
 // ─── Attribution Calendly ─────────────────────────────────────────────────
@@ -43,30 +35,7 @@ const UTM_KEYS = [
   "utm_content",
 ] as const;
 
-const LEAD_ID_KEY = "fnae_lead_id";
 const UTM_STORE_KEY = "fnae_utm";
-
-function readCookie(name: string): string {
-  const m = document.cookie.match(new RegExp("(^|; )" + name + "=([^;]*)"));
-  return m ? decodeURIComponent(m[2]) : "";
-}
-
-// Identifiant de session unique : sert à la fois d'event_id Meta (déduplication
-// navigateur ↔ serveur) et de clé de jointure avec le RDV Calendly.
-function getLeadId(): string {
-  try {
-    const existing = sessionStorage.getItem(LEAD_ID_KEY);
-    if (existing) return existing;
-    const id =
-      typeof crypto !== "undefined" && crypto.randomUUID
-        ? crypto.randomUUID()
-        : String(Date.now()) + Math.random().toString(16).slice(2);
-    sessionStorage.setItem(LEAD_ID_KEY, id);
-    return id;
-  } catch {
-    return String(Date.now());
-  }
-}
 
 // Les UTM sont mémorisés au premier chargement : le popup Calendly peut être
 // ouvert après une navigation qui aurait perdu la query string.
@@ -89,27 +58,13 @@ function getUtms(): Record<string, string> {
   }
 }
 
-// _fbc n'existe en cookie que si le Pixel a déjà tourné sur cette page ; on le
-// reconstruit depuis fbclid sinon (format imposé par Meta : fb.1.<ts>.<fbclid>).
-function getFbCookies(): { fbp: string; fbc: string } {
-  const fbp = readCookie("_fbp");
-  let fbc = readCookie("_fbc");
-  if (!fbc) {
-    const fbclid = new URLSearchParams(window.location.search).get("fbclid");
-    if (fbclid) fbc = "fb.1." + Date.now() + "." + fbclid;
-  }
-  return { fbp, fbc };
-}
-
-// Construit l'URL Calendly avec les UTM (repris tels quels par Calendly dans le
-// webhook, champ payload.tracking) et salesforce_uuid, champ libre utilisé ici
-// pour transporter leadId + _fbp + _fbc jusqu'au serveur.
+// Construit l'URL Calendly avec les UTM : Calendly les stocke sur la fiche de
+// l'invité, ce qui rend le RDV rattachable à sa campagne dans le CRM.
 function buildCalendlyUrl(): string {
   const url = new URL(CALENDLY_URL);
-  const utms = getUtms();
-  for (const [key, value] of Object.entries(utms)) url.searchParams.set(key, value);
-  const { fbp, fbc } = getFbCookies();
-  url.searchParams.set("salesforce_uuid", [getLeadId(), fbp, fbc].join("~"));
+  for (const [key, value] of Object.entries(getUtms())) {
+    url.searchParams.set(key, value);
+  }
   return url.toString();
 }
 
@@ -344,21 +299,9 @@ export default function FormationAutoEntrepreneurPage() {
       // navigateur sur toutes les LP) — le dupliquer ferait double-déclencher
       // tout tag branché dessus.
       if (calendlyEvent === "event_scheduled") {
-        // Event standard Meta pour une prise de rendez-vous.
-        // Le même event_id est renvoyé côté serveur par le webhook Calendly
-        // (Conversions API) : Meta dédoublonne, le serveur apporte le matching
-        // e-mail quand le navigateur est bloqué (adblock/ITP).
-        const leadId = getLeadId();
-        pushEvent("Schedule", {
-          content_name: "formation_ae",
-          source: "calendly",
-          event_id: leadId,
-        });
-        fbqTrack(
-          "Schedule",
-          { content_name: "formation_ae", source: "calendly" },
-          leadId,
-        );
+        // Event standard Meta pour une prise de rendez-vous
+        pushEvent("Schedule", { content_name: "formation_ae", source: "calendly" });
+        fbqTrack("Schedule", { content_name: "formation_ae", source: "calendly" });
       }
     };
 
