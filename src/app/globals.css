@@ -3,3 +3,126 @@
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+
+/* ---------------------------------------------------------------------------
+   LP Comité d'entreprise : système de design éditorial, scopé à .lp-ce
+   pour ne pas affecter les autres landing pages qui partagent le layout.
+   --------------------------------------------------------------------------- */
+.lp-ce {
+  --ink: #0A2540;
+  --ink-soft: #143A5C;
+  --blue: #1A72B4;
+  --accent: #ED6952;
+  --accent-deep: #D4452C;
+  --paper: #FBF8F4;
+  --paper-2: #F3EDE5;
+  --line: rgba(10, 37, 64, 0.12);
+  --line-strong: rgba(10, 37, 64, 0.22);
+  --muted: #6B7C8F;
+  --ok: #1F7A4D;
+
+  font-family: var(--font-fnae), "Source Sans Pro", ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Titres : même famille que fnae.fr, différenciés par la graisse et le serrage */
+.lp-ce .display {
+  font-family: var(--font-fnae), "Source Sans Pro", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+.lp-ce .num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Filet décoratif : remplace les bordures grises uniformes */
+.lp-ce .rule {
+  border-color: var(--line);
+}
+
+/* Grain : donne de la matière aux aplats sombres */
+.lp-ce .grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* Révélation au chargement, échelonnée via animation-delay en inline */
+@keyframes lpRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.lp-ce [data-rise] {
+  animation: lpRise 0.75s cubic-bezier(0.22, 0.72, 0.2, 1) both;
+}
+
+/* Bandeau de logos défilant */
+@keyframes lpMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.lp-ce .marquee-track {
+  display: flex;
+  width: max-content;
+  animation: lpMarquee 42s linear infinite;
+}
+.lp-ce .marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.lp-ce .marquee-mask {
+  mask-image: linear-gradient(to right, transparent, #000 7rem, #000 calc(100% - 7rem), transparent);
+}
+
+/* Cartes : élévation discrète au survol, jamais d'ombre lourde */
+.lp-ce .lift {
+  transition: transform 0.35s cubic-bezier(0.22, 0.72, 0.2, 1), box-shadow 0.35s, border-color 0.35s;
+}
+.lp-ce .lift:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: 0 18px 40px -28px rgba(10, 37, 64, 0.45);
+}
+
+.lp-ce .underline-slide {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s ease;
+}
+.lp-ce .underline-slide:hover { background-size: 100% 1px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-ce [data-rise],
+  .lp-ce .marquee-track { animation: none !important; }
+  .lp-ce .lift:hover { transform: none; }
+}
+
+/* Accordéons natifs <details> : même rendu qu'avant, sans JavaScript */
+.lp-ce details > summary::-webkit-details-marker { display: none; }
+.lp-ce details > summary::marker { content: ""; }
+
+/* FAQ : la barre verticale du + pivote à l'ouverture */
+.lp-ce details.faq > summary .bar {
+  transition: transform 0.3s cubic-bezier(0.22, 0.72, 0.2, 1);
+}
+.lp-ce details.faq[open] > summary .bar { transform: rotate(90deg); }
+
+/* Catalogue : bascule du libellé « + N enseignes » / « Réduire » */
+.lp-ce details.more > summary .opened { display: none; }
+.lp-ce details.more[open] > summary .closed { display: none; }
+.lp-ce details.more[open] > summary .opened { display: inline; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-ce details.faq > summary .bar { transition: none; }
+}

@@ -1,6 +1,20 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
+
+// Source Sans Pro : la police de fnae.fr (servie par Elementor). Source Sans 3
+// en est la version maintenue sur Google Fonts, même dessin.
+// Exposée en variable CSS uniquement : les pages qui ne l'appliquent pas
+// gardent la police système définie dans globals.css.
+// Police variable : en omettant `weight`, Next sert un seul fichier par style
+// qui couvre toutes les graisses, au lieu d'un fichier statique par graisse.
+const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-fnae",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "FNAE – Fédération Nationale des Auto-Entrepreneurs",
@@ -13,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={sourceSans.variable}>
       <head>
         {/* Google Tag Manager — container principal (inclut le Pixel Facebook) */}
         <Script

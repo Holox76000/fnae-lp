@@ -108,8 +108,8 @@ const PAIN_POINTS = [
     desc: "Vous repoussez l'ouverture de vos courriers URSSAF. À chaque fois, vous craignez la mauvaise nouvelle.",
   },
   {
-    title: "Vous patauguez",
-    desc: "Vous patauguez avec la TVA. Vous ne savez pas si vous êtes dans les clous, et personne ne vous l'a vraiment expliqué.",
+    title: "Vous pataugez",
+    desc: "Vous pataugez avec la TVA. Vous ne savez pas si vous êtes dans les clous, et personne ne vous l'a vraiment expliqué.",
   },
   {
     title: "Vous improvisez",
@@ -364,7 +364,7 @@ export default function FormationAutoEntrepreneurPage() {
             Sans plus jamais paniquer devant l'URSSAF.
           </h1>
           <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            La formation de la Fédération Nationale des Auto-Entrepreneurs, la seule organisation reconnue représentative au niveau national. Pour ne plus jamais subir l'administratif.
+            La formation de la FNAE, la seule organisation reconnue représentative au niveau national. Pour ne plus jamais subir l'administratif.
           </p>
           <div className="flex justify-center">
             <button

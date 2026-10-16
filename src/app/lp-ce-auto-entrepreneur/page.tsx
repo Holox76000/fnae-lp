@@ -1,10 +1,5 @@
-"use client";
-
-import { useState, useEffect } from "react";
-
-const BLUE = "#1A72B4";
-const BLUE_DARK = "#1565A0";
-const ORANGE = "#ED6952";
+import Pixel from "./Pixel";
+import Pricing from "./Pricing";
 
 const LINKS = {
   essentielAnnuel: "https://fnae.fr/adhesion/essentiel-annuel/",
@@ -18,7 +13,7 @@ const LINKS = {
 const faqs = [
   {
     q: "Comment j'accède aux réductions ?",
-    a: "Dès votre adhésion validée, vous recevez un accès à votre espace adhérent qui contient le catalogue complet des +200 partenaires. Vous générez vos codes promo ou e-billets directement depuis la plateforme, en quelques clics.",
+    a: "Dès votre adhésion validée, vous recevez un accès à votre espace adhérent qui contient le catalogue complet des +350 enseignes. Vous générez vos codes promo ou e-billets directement depuis la plateforme, en quelques clics.",
   },
   {
     q: "Les réductions sont-elles cumulables avec d'autres promos ?",
@@ -26,7 +21,15 @@ const faqs = [
   },
   {
     q: "Quels partenaires exactement ?",
-    a: "+200 enseignes : cinéma (Pathé, UGC), voyages (Booking, SNCF, Air France), culture (Fnac), sport (Decathlon, Adidas), streaming (Netflix, Spotify), alimentation (Carrefour), et bien d'autres.",
+    a: "Plus de 350 enseignes et lieux de loisirs, réparties en 25 catégories : cinéma (Pathé, UGC, CGR, Kinepolis), grands parcs (Disneyland Paris, Futuroscope, Parc Astérix), zoos et aquariums, spas et thermes, salles de sport (Fitness Park, KeepCool, Neoness), grande distribution (Carrefour, E.Leclerc, Auchan), mode (Adidas, Zalando, H&M), abonnements (Netflix, Deezer), et la billetterie spectacles avec des milliers de dates partout en France.",
+  },
+  {
+    q: "Les offres assurance et mutuelle sont-elles incluses dans l'adhésion ?",
+    a: "Non : ce sont des contrats souscrits directement auprès de nos partenaires (Coover, Mutami). Votre adhésion FNAE vous donne accès aux conditions négociées : tarifs préférentiels, remises adhérent et frais offerts selon les partenaires.",
+  },
+  {
+    q: "Comment je profite des conditions adhérent chez les partenaires ?",
+    a: "La plupart des offres s'activent depuis votre espace adhérent, une fois connecté : vous accédez au lien partenaire qui applique automatiquement les conditions FNAE (par exemple la remise de 10 % chez Coover).",
   },
   {
     q: "Puis-je passer à une formule supérieure plus tard ?",
@@ -38,176 +41,729 @@ const faqs = [
   },
 ];
 
+// Logos du bandeau hero : vectoriels monochromes uniquement (aucun bitmap
+// encapsulé), pour supporter l'inversion en blanc sans pavé opaque.
+// `wide` distingue les logotypes horizontaux des marques carrées, qui n'ont
+// pas la même hauteur optique à largeur égale.
 const partners = [
-  { name: "Wonderbox", discount: "jusqu'à −50%", logo: "/logos/wonderbox.svg" },
-  { name: "Pathé", discount: "~−30%", logo: "/logos/pathe.svg" },
-  { name: "Pierre & Vacances", discount: "−30%", logo: "/logos/pierrevacances.svg" },
-  { name: "Belambra", discount: "−30%", logo: "/logos/belambra.svg" },
-  { name: "Disneyland Paris", discount: "jusqu'à −39 €", logo: "/logos/disneylandparis.png" },
-  { name: "Parc Astérix", discount: "offre exclusive", logo: "/logos/parcasterix.png" },
-  { name: "Carrefour", discount: "jusqu'à −5%", logo: "/logos/carrefour.svg" },
-  { name: "Kiloutou", discount: "jusqu'à −40%", logo: "/logos/kiloutou.svg" },
-  { name: "Decathlon", discount: "réductions exclusives", logo: "/logos/decathlon.svg" },
-  { name: "Netflix", discount: "offres partenaires", logo: "/logos/netflix.svg" },
-  { name: "Spotify", discount: "offres partenaires", logo: "/logos/spotify.svg" },
-  { name: "SNCF", discount: "tarifs préférentiels", logo: "/logos/sncf.svg" },
-  { name: "Air France", discount: "tarifs préférentiels", logo: "/logos/airfrance.svg" },
-  { name: "+190 autres", discount: "partenaires", logo: null },
+  { name: "Disneyland Paris", logo: "/logos/disneylandparis.svg", wide: true },
+  { name: "Pathé", logo: "/logos/pathe.svg", wide: false },
+  { name: "Carrefour", logo: "/logos/carrefour.svg", wide: false },
+  { name: "Decathlon", logo: "/logos/decathlon.svg", wide: true },
+  { name: "Netflix", logo: "/logos/netflix.svg", wide: false },
+  { name: "Spotify", logo: "/logos/spotify.svg", wide: false },
+  { name: "SNCF", logo: "/logos/sncf.svg", wide: false },
+  { name: "Air France", logo: "/logos/airfrance.svg", wide: false },
+  { name: "Pierre & Vacances", logo: "/logos/pierrevacances.svg", wide: true },
+  { name: "Belambra", logo: "/logos/belambra.svg", wide: true },
+  { name: "Kiloutou", logo: "/logos/kiloutou.svg", wide: true },
 ];
 
-function TrustpilotBadge() {
+// Offres négociées avec les partenaires pros (hors club réductions)
+const insuranceOffers = [
+  {
+    name: "Coover",
+    tags: ["RC Pro", "Prévoyance", "Mutuelle"],
+    price: "RC Pro dès 11,50 € / mois",
+    desc: "Néo-assurance 100 % digitale : contrats négociés auprès de plus de 30 assureurs, un expert joignable par téléphone, e-mail ou chat, devis et attestation en quelques minutes.",
+    perk: "−10 % sur votre prime d'assurance",
+  },
+  {
+    name: "Mutami",
+    tags: ["Mutuelle", "Prévoyance"],
+    price: "dès 33,04 € / mois",
+    desc: "Mutuelle régionale indépendante (depuis 1962) et 20 agences de proximité. Tiers payant complet, médecines douces dès le 2ᵉ niveau, téléconsultation illimitée et un conseiller dédié.",
+    perk: "Offre exclusive réservée aux adhérents FNAE",
+  },
+];
+
+const otherOffers = [
+  {
+    title: "Banque & encaissement",
+    icon: "💳",
+    items: [
+      { name: "Banque Populaire", desc: "Compte professionnel" },
+      { name: "L by LCL Pro", desc: "Banque en ligne pro" },
+      { name: "SumUp", desc: "Terminal de paiement" },
+      { name: "Smile & Pay", desc: "Encaissement mobile" },
+    ],
+  },
+  {
+    title: "Gestion & facturation",
+    icon: "🧾",
+    items: [
+      { name: "FNAE Gestion", desc: "Facturation en ligne" },
+      { name: "Logiciel devis & facture", desc: "Devis, factures, suivi" },
+      { name: "Dell Technologies", desc: "Matériel informatique" },
+      { name: "Simplebo", desc: "Création de site web" },
+    ],
+  },
+  {
+    title: "Juridique & accompagnement",
+    icon: "⚖️",
+    items: [
+      { name: "CAARL", desc: "Recouvrement & juridique" },
+      { name: "Clinique des Entrepreneurs", desc: "Accompagnement en difficulté" },
+      { name: "Vendez votre micro-entreprise", desc: "Cession d'activité" },
+      { name: "Camping Direct", desc: "Vacances à tarif négocié" },
+    ],
+  },
+];
+
+// Catalogue du club réductions : taux relevés sur la plateforme adhérent
+const catalog = [
+  // ----- Sorties & loisirs -----
+  {
+    group: "sorties",
+    title: "Cinéma",
+    icon: "🎬",
+    max: "jusqu'à −50%",
+    highlight: null,
+    brands: [
+      "Pathé −50% (dès 4 €)", "Cineplanet −40%", "CGR −39%", "Kinepolis −35%",
+      "UGC −34%", "Majestic −34%", "MK2 −32%", "Le Lido / Le Pagnol / Le Vox −30%",
+      "Cinémas Cannes-Antibes −29%", "Megarama −27%", "Six n'étoiles −26%",
+      "Pathé Gaumont (montant au choix) −25%", "CinéPass Pathé −24%",
+      "Cinéville −23%", "CinéChèque −20%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Grands parcs & attractions",
+    icon: "🎢",
+    max: "jusqu'à −55%",
+    highlight: null,
+    brands: [
+      "Disneyland Paris jusqu'à −55%", "PortAventura jusqu'à −45%", "Futuroscope −43%",
+      "Walygator Sud-Ouest −32%", "Puy du Fou −30%", "Magic Park Land −29%",
+      "Europa-Park −27%", "Parc Astérix −25%", "Bagatelle −24%", "Mer de Sable −23%",
+      "Bellewaerde −23%", "Le Pal −22%", "Vulcania −22%", "Parc Spirou −21%",
+      "Walibi Rhône-Alpes −18%", "Nigloland −13%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Concerts, théâtre & spectacles",
+    icon: "🎤",
+    max: "tarifs négociés",
+    highlight: "Des milliers de dates partout en France",
+    brands: [
+      "Concerts (Gims, Bigflo & Oli, Vanessa Paradis, Ninho, PLK…)",
+      "Humour (Dany Boon, Fabrice Éboué, Jarry, Arnaud Tsamère…)",
+      "Théâtre (Les Bodin's, Messmer, Mask Singer, Danse avec les Stars…)",
+      "Comédies musicales (Le Roi Soleil, Flashdance, Grease, Brel…)",
+      "Spectacles enfants (Disney sur Glace, Madagascar, Aldebert…)",
+      "Cirque (Cirque du Soleil OVO, Cirque Imagine −11%, Étoiles de Pékin…)",
+      "Classique & opéra (Lang Lang, Roberto Alagna, La Traviata…)",
+      "Danse & cabarets (Casse-Noisette, Lac des Cygnes, Shen Yun…)",
+      "Magie & mentalisme (Festival Mondial de la Magie, Luc Langevin…)",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Parcs de loisirs & indoor",
+    icon: "🪁",
+    max: "jusqu'à −63%",
+    highlight: null,
+    brands: [
+      "SpeedPark −63%", "OK Corral −20%", "Royaume des Arbres −20%",
+      "Bois des Lutins −19%", "MontoPoto −19%", "Forêt Adrénaline −17%",
+      "Mini-Europe Bruxelles −17%", "Coudou Parc −16%", "Village des Fous −16%",
+      "Winnoland −15%", "Aven Parc −15%", "Parc Mini-Châteaux −15%",
+      "Gulli Parc −14%", "EcoPark Adventures −10%", "Parc Oriental de Maulévrier −10%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Parcs animaliers",
+    icon: "🦁",
+    max: "jusqu'à −25%",
+    highlight: null,
+    brands: [
+      "Zoo de la Barben −25%", "Branféré −23%", "Safari de Peaugres −22%",
+      "ZooParc de Beauval −19%", "Parc de Sainte-Croix −19%", "Zoo de Thoiry −18%",
+      "Zoo de la Palmyre −18%", "Zoo de Cerza −17%", "Parc des Oiseaux −17%",
+      "La Vallée des Singes −17%", "Planète Sauvage −14%", "Zoo d'Amnéville −13%",
+      "Pairi Daiza −9%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Aquariums",
+    icon: "🐠",
+    max: "jusqu'à −33%",
+    highlight: null,
+    brands: [
+      "Océanopolis −33%", "Aquarium de Lyon −23%", "Planet Ocean Montpellier −22%",
+      "Aquarium Oniria −20%", "Aquarium de Barcelone −18%", "Sea Life −17%",
+      "Musée Océanographique de Monaco −17%", "Nausicaá −16%",
+      "Seaquarium Le Grau-du-Roi −15%", "Aquarium de Touraine −15%",
+      "Aquarium des Tropiques −14%", "Aquarium de Saint-Malo −13%",
+      "Aquarium de Paris −13%", "Aquarium de Biarritz −10%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Parcs aquatiques",
+    icon: "🏊",
+    max: "jusqu'à −32%",
+    highlight: null,
+    brands: [
+      "Vitam −32%", "Aquaboulevard −30%", "Aqualibi −28%",
+      "Bellewaerde Aquapark −25%", "Les Antilles de Jonzac −19%",
+      "Aquatic Landes −15%", "Water Glisse Passion −10%", "Nautiland Haguenau −5%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Spa, thalasso & thermes",
+    icon: "💆",
+    max: "jusqu'à −42%",
+    highlight: null,
+    brands: [
+      "Galéa −42%", "Thalassoleil −26%", "Aquatonic −22%", "Les Iléades −22%",
+      "Cap Natura Lyon −20%", "O Club Les Atlantides −15%",
+      "Calicéo −9% à −14%", "BodyFloat Paris −14%", "Spas de France −10%",
+      "Caracalla Therme −10%", "Villa Pompéi Amnéville −9%",
+      "Vita Classica −9%", "ValVital −6%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Activités sportives",
+    icon: "🧗",
+    max: "jusqu'à −60%",
+    highlight: null,
+    brands: [
+      "Skipower (carte Espace Diamant) −60%", "Vertical'Art −36%",
+      "Speedkart −43%", "Climb Up −26%", "Trampoline Park You Jump −21%",
+      "B'Up Clermont −17%", "South Block Park −15%", "Uniclimb −15%",
+      "Bloc Session −13%", "Jump Arena −11%", "UrbanSoccer / UrbanPadel −5%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Ski & montagne",
+    icon: "🎿",
+    max: "jusqu'à −23%",
+    highlight: null,
+    brands: [
+      "Val d'Allos / Espace Lumière −23%", "Pra Loup / Espace Lumière −23%",
+      "Auron / Isola 2000 −17%", "Valberg −16%",
+      "Skipower carte Espace Diamant −60%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Musées, monuments & visites",
+    icon: "🏛️",
+    max: "jusqu'à −50%",
+    highlight: null,
+    brands: [
+      "Centre Pompidou Metz −50%", "Bateaux Mouches −50%",
+      "Passeport Monuments Nationaux −25%", "Musée de l'Homme −24%",
+      "Musée National de l'Automobile −23%", "Muséum national d'Histoire naturelle −22%",
+      "Musée Grévin −20%", "Aven d'Orgnac −18%", "Musée du Vin Paris −17%",
+      "Musée de la Romanité Nîmes −17%", "Carrières des Lumières −12%",
+      "Aéroscopia −10%", "Atelier des Lumières −9%",
+    ],
+  },
+  {
+    group: "sorties",
+    title: "Vacances & voyages",
+    icon: "✈️",
+    max: "jusqu'à −16%",
+    highlight: null,
+    brands: [
+      "Smartbox −16%", "MMV −9%", "Accor / Ibis week-end −8%",
+      "Costa Croisières −7%", "Cabanes de France −7%", "GetYourGuide −6%",
+      "VeryChic −6%", "Weekendesk −6%", "lastminute −6%", "FlixBus −5%",
+      "Campings.com −4,5%", "Sixt −4%", "Havas Voyages −4%", "Ulysse −3,7%",
+      "Airbnb −3%", "Pierre & Vacances −3%", "Center Parcs −2,5%",
+    ],
+  },
+
+  // ----- Achats du quotidien -----
+  {
+    group: "achats",
+    title: "Grande distribution & courses",
+    icon: "🛒",
+    max: "jusqu'à −5%",
+    highlight: "Bons d'achat au montant de votre choix",
+    brands: [
+      "Carrefour −5%", "Auchan −4,2%", "E.Leclerc −4%", "Monoprix −4%",
+      "Magasins U −4%", "Intermarché −3%", "Netto −3%", "Le Chéquier Vert −3%",
+      "Cdiscount −2%", "Wondergift −2%", "Amazon",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Mode",
+    icon: "👕",
+    max: "jusqu'à −10%",
+    highlight: null,
+    brands: [
+      "Gémo −10%", "Adidas −10%", "Etam −10%", "Zalando −9%", "Darjeeling −9%",
+      "BZB −8%", "Promod −7%", "Jules −7%", "Sarenza −7%",
+      "Primark −6,2%", "Galeries Lafayette −6%", "H&M −5%", "Nike −5%",
+      "Courir −5%", "La Redoute AMPM −5%", "Bonobo −4%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Beauté & bijoux",
+    icon: "💄",
+    max: "jusqu'à −15%",
+    highlight: null,
+    brands: [
+      "Swarovski −15%", "Patyka −15%", "Blissim −13%", "Carte Fleurance −13%",
+      "Dr Pierre Ricaud −11,4%", "Cleor −11%", "Respire −11%", "Clarins −10%",
+      "Les Georgettes −10%", "Marionnaud −8,5%", "Yves Rocher −8%",
+      "Rituals −8%", "Sephora −7%", "Passion Beauté −7%",
+      "Mademoiselle Bio −6%", "Maty −5%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Maison & bricolage",
+    icon: "🔧",
+    max: "jusqu'à −11%",
+    highlight: null,
+    brands: [
+      "Bonsoirs −11%", "Mondial Tissus −10%", "Interflora −9%", "Jardiland −8%",
+      "Wecandoo −8%", "Nature & Découvertes −6%", "Camif −6%", "Leroy Merlin −5%",
+      "Castorama −5%", "Maisons du Monde −5%", "Zoomalia −4,5%",
+      "Bricomarché −4%", "IKEA −4%", "Gifi −4%", "Electro Dépôt −3%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "High-tech",
+    icon: "💻",
+    max: "jusqu'à −10%",
+    highlight: null,
+    brands: [
+      "Devialet −10%", "Norton −9%", "Le Petit Fumeur −8%", "Kaspersky −4%",
+      "Fnac Darty −4%", "Apple Gift Card −2,5%", "Cdiscount −2%", "Amazon",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Sport & salles de sport",
+    icon: "🏋️",
+    max: "jusqu'à −48%",
+    highlight: "Abonnement salle jusqu'à −31%",
+    brands: [
+      "MySportRoom −48%", "Training Go −36%", "Jooks −33%",
+      "Neoness / KeepCool −31%", "Forest Hill −31%", "Fitness Park −21%",
+      "Episod Sports Studios −20%", "Swedish Fit −17%", "Domyos Fitness Club −16%",
+      "Vert Marine −16%", "Gymnésia −13%", "L'Orange Bleue −10%",
+      "FizzUp −8%", "Strava −7%", "Au Vieux Campeur −6%", "Decathlon −3,5%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Abonnements digitaux",
+    icon: "📺",
+    max: "jusqu'à −25%",
+    highlight: null,
+    brands: [
+      "Deezer −25%", "Deezer Family 12 mois −20%", "Xbox −14,55%",
+      "digiSchool −11%", "Babbel −10%", "L'Équipe −8%", "Benshi −7%",
+      "Sony −6%", "Crunchyroll −6%", "Molotov −5%", "Google −4,3%",
+      "Netflix −4%", "Meta Quest −4%", "Disney+ −2%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Culture & presse",
+    icon: "📚",
+    max: "jusqu'à −21%",
+    highlight: null,
+    brands: [
+      "Pandacraft −21%", "ViaPresse −20%", "Easialy magazines −20%",
+      "Storyplay'R −19%", "Prismashop −12%", "Abonnement magazines −9%",
+      "Rougier & Plé −8%", "CEWE −7%", "A2Presse −7%", "Cultura −6%",
+      "Furet du Nord / Decitre −5,5%", "Ticketmaster −4%", "BDfugue −4%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Gastronomie & vins",
+    icon: "🍷",
+    max: "jusqu'à −14%",
+    highlight: null,
+    brands: [
+      "Bateau Le Théo −14%", "Les 2 Marmottes −10%", "Quitoque −10%",
+      "Maison Carrousel −10%", "Ecomiam −9%", "Vinoclub −9%", "Lavinia −8%",
+      "SodaStream −8%", "Champmarket −8%", "Le Petit Ballon −7%", "Eataly −7%",
+      "Madame Brasserie −6%", "Rrraw −6%", "TheFork −5%", "Uber Eats −4%",
+      "Deliveroo −3%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Bien-être & santé",
+    icon: "🧘",
+    max: "jusqu'à −42%",
+    highlight: null,
+    brands: [
+      "Le Klube Dijon −42%", "Institut Beauté & Spa Aloria −22%", "Aqua'Villa −17%",
+      "Guinot Mary Cohr −13%", "Zen by Deezer −13%", "Clarins −10%",
+      "Grand Optical −9%", "Epycure −9%", "Hypnoledge −9%", "Visorando −8%",
+      "VO2Fast −7%", "Withings −7%", "Comme Avant −7%", "Aroma-Zone −6%",
+      "DietSensor −6%", "Kwit −5%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Jouets & jeux",
+    icon: "🧸",
+    max: "jusqu'à −13%",
+    highlight: null,
+    brands: [
+      "Figured'Art −13%", "Oxybul −11,5%", "King Jouet −10%", "Nintendo −10%",
+      "Minecraft −9%", "Ane & Gramme −7%", "Cultura −6%", "Roblox −6%",
+      "LEGO −5,5%", "Fortnite −4,65%", "EA −4%", "Blacknut −4%", "JouéClub −3%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Bébé & enfant",
+    icon: "🍼",
+    max: "jusqu'à −11%",
+    highlight: null,
+    brands: [
+      "Okaïdi-Obaïbi −11%", "Absorba −10,1%", "Jacadi −9%", "Aubert −9%",
+      "DPAM −8%", "Tamboor −8%", "Natalys −7%", "Sergent Major −7%",
+      "Papate −7%", "Petit Bateau −6%", "Vertbaudet −6%",
+      "Les Petits Raffineurs −6%", "Orchestra −5%",
+    ],
+  },
+  {
+    group: "achats",
+    title: "Consommation responsable",
+    icon: "🌱",
+    max: "jusqu'à −15%",
+    highlight: null,
+    brands: [
+      "Seize Point Neuf −15%", "SPRiNG −12%", "Umaï −7%", "Ubac −7%",
+      "Ilya −7%", "Lukine −7%", "Maître Savonitto −7%", "Les Raffineurs −6%",
+      "WeDressFair −6%", "El Market −6%", "Recyclivre −5%",
+      "The Trust Society −5%", "Panafrica −4%", "Modetic −3,5%",
+      "Label Emmaüs −2%",
+    ],
+  },
+];
+
+// Jeu d'icônes linéaires maison : remplace les emojis, hérite de currentColor
+const ICONS: Record<string, string[]> = {
+  building: ["M5 21V8l7-4 7 4v13", "M3 21h18", "M9.5 21v-5h5v5", "M9 11h1.5", "M13.5 11H15"],
+  tag: ["M20.3 13.1l-7.2 7.2a1.9 1.9 0 01-2.7 0L3.7 13.6V4h9.6l7 7a1.9 1.9 0 010 2.1z", "M8 8.5h.01"],
+  sun: ["M16 12a4 4 0 11-8 0 4 4 0 018 0z", "M12 3v2", "M12 19v2", "M3 12h2", "M19 12h2", "M5.6 5.6l1.4 1.4", "M17 17l1.4 1.4", "M18.4 5.6L17 7", "M7 17l-1.4 1.4"],
+  heart: ["M12 20s-7-4.4-7-9.5A4 4 0 0112 8a4 4 0 017 2.5C19 15.6 12 20 12 20z"],
+  bell: ["M18 16.5V11a6 6 0 10-12 0v5.5L4 19h16z", "M10 22h4"],
+  pin: ["M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z", "M14 10a2 2 0 11-4 0 2 2 0 014 0z"],
+  chat: ["M4 4h16v12H9.5L4 20z", "M8 9h8", "M8 12.5h5"],
+  award: ["M17 9a5 5 0 11-10 0 5 5 0 0110 0z", "M9 13.6L8 22l4-2.2 4 2.2-1-8.4"],
+  card: ["M3 6h18v12H3z", "M3 10h18", "M6.5 14.5h3"],
+  scale: ["M12 4v16", "M5 7.5h14", "M8 20h8", "M7.5 7.5L4 14h7z", "M16.5 7.5L13 14h7z"],
+  columns: ["M3 9l9-5 9 5", "M4 21h16", "M5.5 21V10", "M18.5 21V10", "M12 21V10"],
+  users: ["M9.5 11a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4z", "M3 20c0-3 2.9-5 6.5-5s6.5 2 6.5 5", "M16.5 11.2a3 3 0 100-6", "M18 20c0-2 .6-3.6-1-4.6"],
+  clipboard: ["M8 5H6v16h12V5h-2", "M9 3h6v3H9z", "M9 11h6", "M9 15h4"],
+  shield: ["M12 3.5l7 2.8v4.9c0 4.2-2.9 7.6-7 9.3-4.1-1.7-7-5.1-7-9.3V6.3z", "M9.2 12l2 2 3.6-3.8"],
+  check: ["M4.5 12.5l4.6 4.6L19.5 6.7"],
+  cross: ["M6.5 6.5l11 11", "M17.5 6.5l-11 11"],
+  arrow: ["M4 12h15", "M13.5 6.5L20 12l-6.5 5.5"],
+  spark: ["M12 3l1.9 5.4L19 10l-5.1 1.6L12 17l-1.9-5.4L5 10l5.1-1.6z"],
+  ticket: ["M3 9.5a2 2 0 002-2h14a2 2 0 002 2v5a2 2 0 00-2 2H5a2 2 0 00-2-2z", "M9 7.5v9"],
+};
+
+function Icon({ name, className = "w-5 h-5" }: { name: keyof typeof ICONS | string; className?: string }) {
+  const paths = ICONS[name] ?? ICONS.spark;
   return (
-    <div
-      style={{ backgroundColor: BLUE_DARK }}
-      className="inline-flex items-center gap-3 rounded-full px-5 py-2.5 mb-8"
-    >
-      <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg" alt="4,8/5" className="h-5" />
-      <span className="text-white text-sm font-semibold">4,8/5</span>
-      <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/logo-white.svg" alt="Trustpilot" className="h-4 opacity-90" />
-      <span className="text-blue-200 text-sm">· 471 avis vérifiés</span>
-    </div>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      {paths.map((d, i) => <path key={i} d={d} />)}
+    </svg>
+  );
+}
+
+function Stars({ className = "h-4" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 20" className={className} aria-label="4,8 sur 5" role="img">
+      {[0, 20, 40, 60, 80].map((x) => (
+        <g key={x} transform={`translate(${x} 0)`}>
+          <rect width="19" height="19" rx="2.5" fill="#00B67A" />
+          <path d="M9.5 3.6l1.8 4.1 4.4.4-3.3 2.9 1 4.3-3.9-2.3-3.9 2.3 1-4.3L3.3 8.1l4.4-.4z" fill="#fff" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ color: "var(--muted)" }}>
+      {children}
+    </p>
+  );
+}
+
+function CTA({
+  href, onClick, children, variant = "solid", className = "",
+}: {
+  href: string; onClick?: () => void; children: React.ReactNode;
+  variant?: "solid" | "ghost" | "light"; className?: string;
+}) {
+  const base = "group inline-flex items-center gap-2.5 rounded-[3px] font-semibold transition-colors duration-300";
+  const styles =
+    variant === "solid" ? { backgroundColor: "var(--accent)", color: "#fff" }
+    : variant === "light" ? { backgroundColor: "#fff", color: "var(--ink)" }
+    : { backgroundColor: "transparent", color: "var(--ink)", border: "1px solid var(--line-strong)" };
+  return (
+    <a href={href} onClick={onClick} style={styles} className={`${base} px-7 py-4 ${className}`}>
+      {children}
+      <Icon name="arrow" className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+    </a>
   );
 }
 
 function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-gray-200">
-      <button
-        className="w-full flex items-center justify-between py-5 text-left gap-4"
-        onClick={() => setOpen(!open)}
-      >
-        <span className="font-semibold text-gray-900">{q}</span>
-        <span style={{ color: BLUE }} className="text-xl flex-shrink-0 font-bold">
-          {open ? "−" : "+"}
+    <details className="faq border-b rule">
+      <summary className="flex items-start justify-between py-6 gap-6 cursor-pointer list-none">
+        <span className="display text-lg sm:text-xl pr-4">{q}</span>
+        <span className="marker relative mt-1.5 w-4 h-4 flex-shrink-0" style={{ color: "var(--accent)" }} aria-hidden="true">
+          <span className="absolute top-1/2 left-0 w-4 h-px -translate-y-1/2" style={{ backgroundColor: "currentColor" }} />
+          <span className="bar absolute left-1/2 top-0 h-4 w-px -translate-x-1/2" style={{ backgroundColor: "currentColor" }} />
         </span>
-      </button>
-      {open && <p className="pb-5 text-gray-600 leading-relaxed">{a}</p>}
-    </div>
+      </summary>
+      <p className="pb-6 pr-10 leading-relaxed" style={{ color: "var(--muted)" }}>{a}</p>
+    </details>
+  );
+}
+
+// Enseignes du catalogue disposant d'un vectoriel monochrome propre.
+// Les logos sont déjà à l'encre de la page (#0A2540), pas de filtre CSS.
+const catalogBrands = [
+  { name: "Airbnb", logo: "/logos/brands/airbnb.svg" },
+  { name: "Carrefour", logo: "/logos/brands/carrefour.svg" },
+  { name: "Auchan", logo: "/logos/brands/auchan.svg" },
+  { name: "Monoprix", logo: "/logos/brands/monoprix.svg" },
+  { name: "Magasins U", logo: "/logos/brands/magasinsu.svg" },
+  { name: "Intermarché", logo: "/logos/brands/intermarche.svg" },
+  { name: "Netto", logo: "/logos/brands/netto.svg" },
+  { name: "Adidas", logo: "/logos/brands/adidas.svg" },
+  { name: "Zalando", logo: "/logos/brands/zalando.svg" },
+  { name: "Nike", logo: "/logos/brands/nike.svg" },
+  { name: "Leroy Merlin", logo: "/logos/brands/leroymerlin.svg" },
+  { name: "Castorama", logo: "/logos/brands/castorama.svg" },
+  { name: "IKEA", logo: "/logos/brands/ikea.svg" },
+  { name: "Norton", logo: "/logos/brands/norton.svg" },
+  { name: "Kaspersky", logo: "/logos/brands/kaspersky.svg" },
+  { name: "Strava", logo: "/logos/brands/strava.svg" },
+  { name: "Deezer", logo: "/logos/brands/deezer.svg" },
+  { name: "Sony", logo: "/logos/brands/sony.svg" },
+  { name: "Crunchyroll", logo: "/logos/brands/crunchyroll.svg" },
+  { name: "Google", logo: "/logos/brands/google.svg" },
+  { name: "Netflix", logo: "/logos/brands/netflix.svg" },
+  { name: "Cultura", logo: "/logos/brands/cultura.svg" },
+  { name: "Ticketmaster", logo: "/logos/brands/ticketmaster.svg" },
+  { name: "Uber Eats", logo: "/logos/brands/ubereats.svg" },
+  { name: "Deliveroo", logo: "/logos/brands/deliveroo.svg" },
+  { name: "Roblox", logo: "/logos/brands/roblox.svg" },
+  { name: "Fortnite", logo: "/logos/brands/fortnite.svg" },
+  { name: "EA", logo: "/logos/brands/ea.svg" },
+  { name: "Apple", logo: "/logos/brands/apple.svg" },
+  { name: "Fnac", logo: "/logos/brands/fnac.svg" },
+  { name: "L'Équipe", logo: "/logos/brands/lequipe.svg" },
+];
+
+function CatalogCard({ cat, index }: { cat: (typeof catalog)[number]; index: number }) {
+  const shown = cat.brands.slice(0, 5);
+  const rest = cat.brands.slice(5);
+  return (
+    <article className="lift bg-white border rule rounded-[3px] p-6 flex flex-col">
+      <div className="flex items-baseline justify-between gap-3 pb-4 mb-4 border-b rule">
+        <span className="num text-[11px] font-semibold tracking-[0.18em]" style={{ color: "var(--muted)" }}>
+          {String(index + 1).padStart(2, "0")}
+        </span>
+        <span className="display text-lg whitespace-nowrap" style={{ color: "var(--accent)" }}>{cat.max}</span>
+      </div>
+      <h3 className="display text-xl mb-3">{cat.title}</h3>
+      {cat.highlight && (
+        <p className="text-xs font-semibold mb-4 inline-flex items-start gap-1.5" style={{ color: "var(--ok)" }}>
+          <Icon name="spark" className="w-3.5 h-3.5 mt-px flex-shrink-0" />
+          {cat.highlight}
+        </p>
+      )}
+      <ul className="space-y-2 flex-1">
+        {shown.map((brand) => (
+          <li key={brand} className="text-[13.5px] leading-snug flex gap-2.5" style={{ color: "var(--ink-soft)" }}>
+            <span style={{ color: "var(--line-strong)" }}>·</span>
+            <span>{brand}</span>
+          </li>
+        ))}
+      </ul>
+      {rest.length > 0 && (
+        <details className="more mt-5">
+          <summary className="underline-slide text-xs font-bold uppercase tracking-[0.12em] cursor-pointer list-none inline-block" style={{ color: "var(--blue)" }}>
+            <span className="closed">+ {rest.length} enseignes</span>
+            <span className="opened">Réduire</span>
+          </summary>
+          <ul className="space-y-2 mt-3">
+            {rest.map((brand) => (
+              <li key={brand} className="text-[13.5px] leading-snug flex gap-2.5" style={{ color: "var(--ink-soft)" }}>
+                <span style={{ color: "var(--line-strong)" }}>·</span>
+                <span>{brand}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </article>
   );
 }
 
 export default function CEPage() {
-  const [proAnnual, setProAnnual] = useState(true);
-  const [premiumAnnual, setPremiumAnnual] = useState(true);
-
-  useEffect(() => {
-    const w = window as any;
-    if (w.fbq) return;
-    const f: any = function (...args: any[]) { f.callMethod ? f.callMethod.apply(f, args) : f.queue.push(args); };
-    w.fbq = w._fbq = f;
-    f.push = f; f.loaded = true; f.version = "2.0"; f.queue = [];
-    const s = document.createElement("script");
-    s.async = true; s.src = "https://connect.facebook.net/en_US/fbevents.js";
-    document.head.appendChild(s);
-    w.fbq("init", "3020497201339683");
-    w.fbq("track", "PageView");
-  }, []);
-
-  const trackCTA = () => {
-    const w = window as any;
-    if (typeof w.fbq === "function") w.fbq("track", "AddToCart");
-  };
+  const logos = partners;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <img src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png" alt="FNAE" className="h-14 w-auto" />
-          <a
-            href={LINKS.proAnnuel}
-            onClick={trackCTA}
-            style={{ backgroundColor: ORANGE }}
-            className="text-white px-5 py-2 rounded text-sm font-bold hover:opacity-90 transition"
-          >
-            Activer mes avantages →
-          </a>
+    <div className="lp-ce min-h-screen">
+      <Pixel />
+
+      {/* ---------------------------------------------------------------- Header */}
+      <header
+        className="sticky top-0 z-50 border-b rule"
+        style={{ backgroundColor: "rgba(251,248,244,0.88)", backdropFilter: "blur(12px)" }}
+      >
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between gap-4">
+          <img src="/logos/fnae-logo.png" alt="FNAE" width={826} height={254} fetchPriority="high" className="h-11 w-auto" />
+          <div className="flex items-center gap-6">
+            <a
+              href="/lp-ce-auto-entrepreneur/choix/"
+              style={{ backgroundColor: "var(--ink)" }}
+              className="text-white px-5 py-2.5 rounded-[3px] text-[13px] font-semibold hover:opacity-90 transition"
+            >
+              Activer mes avantages
+            </a>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section style={{ backgroundColor: BLUE }} className="text-white py-20 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <TrustpilotBadge />
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-6">
-            Le comité d'entreprise des auto-entrepreneurs.
-          </h1>
-          <p className="text-xl text-blue-100 mb-6 max-w-2xl mx-auto">
-            Récupérez les avantages que votre indépendance vous a retirés. Réductions partenaires sur les loisirs, les voyages, les achats quotidiens.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+      {/* ---------------------------------------------------------------- Hero */}
+      <section
+        className="grain relative overflow-hidden"
+        style={{
+          backgroundColor: "var(--ink)",
+          backgroundImage:
+            "radial-gradient(80rem 40rem at 78% -10%, rgba(26,114,180,0.55), transparent 60%), radial-gradient(45rem 30rem at 8% 110%, rgba(237,105,82,0.20), transparent 65%)",
+        }}
+      >
+        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-0 lg:pt-24">
+          <div className="grid lg:grid-cols-[1.08fr_0.92fr] gap-12 lg:gap-16 items-start pb-16">
+            {/* Colonne récit */}
+            <div className="text-white">
+              <div data-rise style={{ animationDelay: "0ms" }} className="flex items-center gap-3 mb-8">
+                <Stars className="h-[18px]" />
+                <span className="text-sm font-semibold">4,8/5</span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>· 471 avis Trustpilot</span>
+              </div>
+
+              <h1 data-rise style={{ animationDelay: "70ms" }} className="display text-[2.6rem] sm:text-6xl lg:text-[4.1rem] mb-7">
+                Le{" "}
+                <em className="italic" style={{ color: "var(--accent)" }}>comité d&apos;entreprise</em>
+                {" "}des auto-entrepreneurs.
+              </h1>
+
+              <p data-rise className="text-lg sm:text-xl leading-relaxed max-w-2xl" style={{ animationDelay: "140ms", color: "rgba(255,255,255,0.74)" }}>
+                Des réductions négociées chez{" "}
+                <strong className="font-semibold" style={{ color: "#fff" }}>+350 enseignes</strong>{" "}
+                (cinéma, parcs, vacances, courses, abonnements), et vos assurances, mutuelle et outils pros à tarif FNAE.
+              </p>
+            </div>
+
+            {/* Colonne offre */}
+            <div data-rise style={{ animationDelay: "280ms" }} className="bg-white rounded-[4px] p-8 sm:p-9" >
+              <Eyebrow>Adhésion Pro · sans engagement</Eyebrow>
+              <div className="flex items-baseline gap-2 mt-5 mb-1">
+                <span className="display num text-[4.5rem] leading-none">64</span>
+                <span className="display text-2xl" style={{ color: "var(--muted)" }}>€ / an</span>
+              </div>
+              <p className="text-sm mb-7" style={{ color: "var(--muted)" }}>
+                soit <strong style={{ color: "var(--ink)" }}>5,33 € / mois</strong>, rentabilisé dès la première réduction utilisée.
+              </p>
+              <CTA href="/lp-ce-auto-entrepreneur/choix/" className="w-full justify-center">
+                Activer mes avantages
+              </CTA>
+              <ul className="mt-7 pt-7 border-t rule space-y-3">
+                {[
+                  "Accès immédiat au catalogue complet",
+                  "Bons d'achat et e-billets en quelques clics",
+                  "Résiliable à tout moment",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--ink-soft)" }}>
+                    <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bandeau de logos défilant */}
+        <div className="relative z-10 border-t" style={{ borderColor: "rgba(255,255,255,0.14)", backgroundColor: "rgba(255,255,255,0.04)" }}>
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 py-4">
+            <p className="text-[10px] uppercase tracking-[0.2em] mb-3" style={{ color: "rgba(255,255,255,0.45)" }}>
+              Vos avantages chez +350 enseignes
+            </p>
+          </div>
+          <div className="marquee marquee-mask overflow-hidden pb-7">
+            <div className="marquee-track items-center gap-12 px-8">
+              {[...logos, ...logos].map((p, i) => (
+                <img
+                  key={`${p.name}-${i}`}
+                  src={p.logo}
+                  alt={i < logos.length ? p.name : ""}
+                  aria-hidden={i >= logos.length}
+                  className={`w-auto object-contain flex-shrink-0 ${p.wide ? "h-5 max-w-[132px]" : "h-7 max-w-[72px]"}`}
+                  style={{ filter: "brightness(0) invert(1)", opacity: 0.72 }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Chiffres */}
+      <section className="border-b rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="grid sm:grid-cols-3">
             {[
-              "✓ Réductions exclusives chez +200 enseignes partenaires",
-              "✓ Loisirs, voyages, courses, abonnements",
-            ].map((item) => (
-              <span key={item} style={{ backgroundColor: BLUE_DARK }} className="text-blue-100 text-sm px-4 py-2 rounded-full">
-                {item}
-              </span>
+              { v: "80 000+", l: "adhérents" },
+              { v: "4,8/5", l: "sur Trustpilot · 471 avis" },
+              { v: "2009", l: "au service des indépendants" },
+            ].map((s, i) => (
+              <div
+                key={s.l}
+                className={`py-9 px-2 sm:px-6 ${i > 0 ? "border-t sm:border-t-0 sm:border-l" : ""} rule`}
+              >
+                <p className="display num text-4xl mb-1.5">{s.v}</p>
+                <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>{s.l}</p>
+              </div>
             ))}
           </div>
-          <div className="inline-flex items-baseline gap-2 mb-3">
-            <span style={{ color: ORANGE }} className="text-6xl sm:text-7xl font-extrabold leading-none">64 €</span>
-            <span className="text-white text-xl font-semibold">/ an</span>
-          </div>
-          <p className="text-blue-100 text-sm mb-7">soit seulement <span className="font-bold text-white">5,33 € / mois</span> · sans engagement</p>
-          <a
-            href={LINKS.proAnnuel}
-            onClick={trackCTA}
-            style={{ backgroundColor: ORANGE }}
-            className="inline-block text-white font-bold px-8 py-4 rounded text-lg transition hover:opacity-90"
-          >
-            Activer mes avantages →
-          </a>
-
-          <div className="mt-12 pt-8 border-t border-white/15">
-            <p className="text-blue-200 text-xs uppercase tracking-widest mb-5">Vos avantages chez +200 enseignes</p>
-            <div className="bg-white rounded-2xl px-6 py-5 shadow-lg">
-              <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
-                {partners.filter((p) => p.logo).slice(0, 8).map((p) => (
-                  <img
-                    key={p.name}
-                    src={p.logo!}
-                    alt={p.name}
-                    className="h-8 sm:h-9 w-auto object-contain"
-                  />
-                ))}
-                <span className="text-gray-500 text-sm font-semibold px-3">+190 autres</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Stats bar */}
-      <section className="bg-white border-b border-gray-100 py-8 px-4 sm:px-6">
+      {/* ---------------------------------------------------------------- Soutiens */}
+      <section className="py-12 px-5 sm:px-8 border-b rule">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-            <div>
-              <p className="text-3xl font-extrabold" style={{ color: BLUE }}>80 000+</p>
-              <p className="text-gray-500 text-sm mt-1">adhérents</p>
-            </div>
-            <div>
-              <p className="text-3xl font-extrabold" style={{ color: BLUE }}>4,8/5</p>
-              <p className="text-gray-500 text-sm mt-1">sur Trustpilot · 471 avis</p>
-            </div>
-            <div>
-              <p className="text-3xl font-extrabold" style={{ color: BLUE }}>2009</p>
-              <p className="text-gray-500 text-sm mt-1">au service des indépendants</p>
-            </div>
-            <div>
-              <p className="text-3xl font-extrabold" style={{ color: BLUE }}>2020</p>
-              <p className="text-gray-500 text-sm mt-1">Syndicat représentatif reconnu par l'État</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Ils nous soutiennent */}
-      <section className="py-10 px-4 sm:px-6" style={{ backgroundColor: "#F2F5F8" }}>
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center text-gray-400 text-sm font-medium mb-8 uppercase tracking-wider">Ils nous soutiennent</p>
-          <div className="flex flex-wrap justify-center items-center gap-10 sm:gap-16">
+          <p className="text-center text-[10px] uppercase tracking-[0.2em] mb-8" style={{ color: "var(--muted)" }}>
+            Siège dans les instances nationales
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-7">
             {[
               { src: "/logos/dgfip.svg", alt: "Direction Générale des Finances Publiques" },
               { src: "/logos/urssaf.svg", alt: "Urssaf" },
@@ -216,432 +772,390 @@ export default function CEPage() {
               { src: "/logos/cipav.svg", alt: "La CIPAV" },
               { src: "/logos/caisse-depots.svg", alt: "Caisse des Dépôts" },
             ].map((logo) => (
-              <img key={logo.alt} src={logo.src} alt={logo.alt} className="h-10 object-contain" style={{ filter: "grayscale(100%) opacity(0.55)" }} />
+              <img key={logo.alt} src={logo.src} alt={logo.alt} loading="lazy" decoding="async" className="h-9 object-contain transition-all duration-500 hover:opacity-100" style={{ filter: "grayscale(100%)", opacity: 0.45 }} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Comparison */}
-      <section className="py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-3xl mx-auto">
+      {/* ---------------------------------------------------------------- Le manque */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Les salariés ont leur CE. Vous, indépendant, vous n'avez rien.
+            <Eyebrow>Le point de départ</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-5">
+              Les salariés ont leur CE.<br />
+              <span style={{ color: "var(--muted)" }}>Vous, indépendant, vous n&apos;avez rien.</span>
             </h2>
           </div>
 
-          <div className="overflow-hidden rounded-2xl shadow-lg border border-gray-100">
-            <div className="grid grid-cols-[1fr_1fr_1fr]">
-              <div style={{ backgroundColor: "#F8FAFC" }} className="p-5 border-b border-gray-200" />
-              <div style={{ backgroundColor: "#F0FDF4" }} className="p-5 text-center border-b border-l border-green-100">
-                <span className="inline-block bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full mb-2">Salarié</span>
-                <p className="text-xs text-green-600">Avantages inclus</p>
-              </div>
-              <div style={{ backgroundColor: "#FEF2F2" }} className="p-5 text-center border-b border-l border-red-100">
-                <span className="inline-block bg-red-100 text-red-600 text-xs font-bold px-3 py-1 rounded-full mb-2">Auto-entrepreneur</span>
-                <p className="text-xs text-red-400">sans FNAE</p>
-              </div>
-            </div>
-            {[
-              { label: "CE / CSE", icon: "🏢" },
-              { label: "Réductions enseignes", icon: "🛍️" },
-              { label: "Chèques vacances", icon: "🏖️" },
-              { label: "Mutuelle d'entreprise", icon: "🏥" },
-            ].map((row, i) => (
-              <div
-                key={row.label}
-                className={`grid grid-cols-[1fr_1fr_1fr] ${i % 2 === 0 ? "bg-white" : "bg-gray-50/50"}`}
-              >
-                <div className="p-5 flex items-center gap-3 border-b border-gray-100">
-                  <span className="text-xl">{row.icon}</span>
-                  <span className="text-gray-800 font-medium text-sm">{row.label}</span>
-                </div>
-                <div style={{ backgroundColor: i % 2 === 0 ? "#F0FDF4" : "#ECFDF5" }} className="p-5 flex items-center justify-center border-b border-l border-green-50">
-                  <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div style={{ backgroundColor: i % 2 === 0 ? "#FEF2F2" : "#FFF5F5" }} className="p-5 flex items-center justify-center border-b border-l border-red-50">
-                  <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-              </div>
-            ))}
-            <div style={{ backgroundColor: BLUE }} className="grid grid-cols-[1fr_1fr_1fr]">
-              <div className="p-5 flex items-center">
-                <span className="text-white font-bold text-sm">Avec la FNAE</span>
-              </div>
-              <div className="p-5" />
-              <div className="p-5 flex items-center justify-center border-l border-blue-400">
-                <svg className="w-6 h-6 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-white text-sm font-semibold ml-2">Tout inclus</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-8 text-center">
-            <p className="text-gray-500 text-lg mb-4">
-              Avec la FNAE, vous récupérez tout ça.{" "}
-              <strong style={{ color: BLUE }}>Dès 64 € / an.</strong>
-            </p>
-            <a
-              href={LINKS.proAnnuel}
-              onClick={trackCTA}
-              style={{ backgroundColor: ORANGE }}
-              className="inline-block text-white font-bold px-8 py-3 rounded-lg transition hover:opacity-90"
-            >
-              Activer mes avantages →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Partners grid */}
-      <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#EBF5FB" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <p style={{ color: BLUE }} className="font-semibold uppercase text-sm tracking-widest mb-3">+200 partenaires</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Vos avantages</h2>
-            <p className="text-gray-500 text-lg">Un catalogue de réductions sur toutes vos dépenses du quotidien et des loisirs.</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {partners.map((partner) => (
-              <div key={partner.name} className="bg-white rounded-xl p-5 text-center border border-gray-200 hover:shadow-md transition flex flex-col items-center justify-center gap-2">
-                {partner.logo ? (
-                  <img
-                    src={partner.logo}
-                    alt={partner.name}
-                    className="h-10 w-auto object-contain"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                  />
-                ) : (
-                  <span className="text-2xl font-bold text-gray-400">+190</span>
-                )}
-                <p className="font-semibold text-gray-900 text-sm">{partner.name}</p>
-                <p className="text-green-600 text-xs font-medium">{partner.discount}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Savings showcase */}
-      <section className="py-16 px-4 sm:px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <p style={{ color: BLUE }} className="font-semibold uppercase text-sm tracking-widest mb-2">Économies concrètes</p>
-            <h2 className="text-3xl font-bold text-gray-900">Ce que vos avantages représentent vraiment</h2>
-            <p className="text-gray-500 mt-3">Exemples d'économies réalisées par nos adhérents</p>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-6">
-            {[
-              { label: "Week-end en famille", saving: "380 €", detail: "économisés sur les vacances d'été via Pierre & Vacances et Booking", icon: "🏖️" },
-              { label: "Loisirs sur l'année", saving: "120 €", detail: "récupérés sur le cinéma, le streaming et les achats culturels", icon: "🎬" },
-              { label: "Équipement professionnel", saving: "200 €", detail: "économisés sur le matériel Decathlon et les équipements métier", icon: "🛍️" },
-            ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-gray-200 p-7 text-center hover:shadow-md transition">
-                <span className="text-3xl block mb-3">{item.icon}</span>
-                <p className="text-4xl font-extrabold mb-1" style={{ color: BLUE }}>{item.saving}</p>
-                <p className="font-semibold text-gray-900 text-sm mb-2">{item.label}</p>
-                <p className="text-gray-500 text-xs leading-relaxed">{item.detail}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-gray-400 text-xs mt-6">Exemples représentatifs basés sur les retours adhérents. Les économies varient selon les partenaires et l'utilisation.</p>
-        </div>
-      </section>
-
-      {/* More than a CE */}
-      <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#EBF5FB" }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Plus qu'un CE</h2>
-            <p className="text-gray-500 text-lg max-w-xl mx-auto">
-              Votre adhésion FNAE inclut aussi des outils concrets pour développer et protéger votre activité.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-8">
-            {[
-              { icon: "🔔", title: "Veille juridique ciblée", desc: "Alertes en temps réel sur les évolutions réglementaires qui concernent votre activité. Seuils TVA, plafonds CA, cotisations…" },
-              { icon: "📍", title: "Annuaire Mon-Presta.fr", desc: "Référencez votre activité gratuitement sur l'annuaire dédié aux auto-entrepreneurs pour gagner en visibilité." },
-              { icon: "🤖", title: "Chatbot juridique 24/7", desc: "Posez vos questions juridiques à tout moment. Le chatbot répond instantanément sur les sujets courants du statut." },
-              { icon: "🏅", title: "Badge adhérent FNAE", desc: "Affichez votre appartenance au plus grand syndicat des auto-entrepreneurs pour rassurer vos clients." },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-5 p-6 rounded-xl border border-gray-200 bg-white hover:shadow-md transition">
-                <span className="text-3xl flex-shrink-0">{item.icon}</span>
-                <div>
-                  <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 px-4 sm:px-6 bg-gray-50">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-4.5.svg" alt="4,8/5" className="h-5" />
-              <span className="font-semibold text-gray-700 text-sm">4,8/5 · 471 avis vérifiés sur</span>
-              <span style={{ color: "#00B67A" }} className="font-bold text-sm">Trustpilot</span>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900">Ce que disent nos adhérents</h2>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm flex flex-col gap-4">
-              <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-5.svg" alt="5 étoiles" className="h-5 w-auto" />
-              <blockquote className="text-gray-700 italic leading-relaxed flex-1">
-                « Avec les réductions FNAE, j'ai économisé 380 € sur mes vacances l'été dernier. L'adhésion s'est rentabilisée 25 fois — et c'est sans compter le cinéma et les abonnements. »
-              </blockquote>
-              <div>
-                <p className="font-semibold text-gray-900 text-sm">Julie B.</p>
-                <p className="text-gray-400 text-xs">Coach sportive, Marseille · Adhérente Pro</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm flex flex-col gap-4">
-              <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-5.svg" alt="5 étoiles" className="h-5 w-auto" />
-              <blockquote className="text-gray-700 italic leading-relaxed flex-1">
-                « J'ai observé avec satisfaction les actions menées par votre organisation qui se positionne comme un véritable rempart pour les entrepreneurs. »
-              </blockquote>
-              <div>
-                <p className="font-semibold text-gray-900 text-sm">Jean-Michel RUBALO</p>
-                <p className="text-gray-400 text-xs">Adhérent depuis 10 ans</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm flex flex-col gap-4">
-              <img src="https://cdn.trustpilot.net/brand-assets/4.1.0/stars/stars-5.svg" alt="5 étoiles" className="h-5 w-auto" />
-              <blockquote className="text-gray-700 italic leading-relaxed flex-1">
-                « Une question complexe reçoit une réponse simple ; tout besoin d'assistance est résolu dans la foulée. »
-              </blockquote>
-              <div>
-                <p className="font-semibold text-gray-900 text-sm">Marc Etienne BOUVIER</p>
-                <p className="text-gray-400 text-xs">Consultant en entreprise</p>
-              </div>
-            </div>
-          </div>
-          <div className="text-center mt-8">
-            <a href="https://fr.trustpilot.com/review/fnae.fr" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-400 hover:text-gray-600 transition underline underline-offset-2">
-              Voir tous les avis sur Trustpilot →
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Institutional legitimacy */}
-      <section className="py-16 px-4 sm:px-6 bg-white border-t border-gray-100">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Reconnaissance officielle</p>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Un syndicat reconnu par l'État, représentant les indépendants dans les instances nationales
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-6 mb-10">
-            <div className="rounded-xl border border-gray-200 p-6 text-center">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "#EBF5FB" }}>
-                <span className="text-xl">🏛️</span>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1 text-sm">Syndicat représentatif</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">Reconnu par l'État depuis 2020 · Fondé en 2009</p>
-            </div>
-            <div className="rounded-xl border border-gray-200 p-6 text-center">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "#EBF5FB" }}>
-                <span className="text-xl">🤝</span>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1 text-sm">Membre de la CPME</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">Confédération des PME · Représentation patronale nationale</p>
-            </div>
-            <div className="rounded-xl border border-gray-200 p-6 text-center">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ backgroundColor: "#EBF5FB" }}>
-                <span className="text-xl">📋</span>
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1 text-sm">Instances nationales</h3>
-              <p className="text-gray-500 text-xs leading-relaxed">Représentée au CPSTI, CAF, CIPAV et Caisse des Dépôts</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {["CPSTI", "CIPAV", "CAF", "DGFIP", "INPI", "CPME"].map((body) => (
-              <span
-                key={body}
-                className="text-xs font-semibold px-4 py-2 rounded-full border"
-                style={{ borderColor: BLUE, color: BLUE }}
-              >
-                {body}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing */}
-      <section id="tarifs" className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#EBF5FB" }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Tarifs</h2>
-            <p className="text-gray-500 text-lg">Rentabilisé dès la 1ère réduction utilisée.</p>
-          </div>
-
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex items-center gap-3 bg-white border border-gray-200 rounded-full px-5 py-2.5 shadow-sm">
-              <span className={`text-sm font-medium ${!proAnnual ? "text-gray-900" : "text-gray-400"}`}>Mensuel</span>
-              <button
-                onClick={() => { setProAnnual(v => !v); setPremiumAnnual(v => !v); }}
-                className="relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none"
-                style={{ backgroundColor: proAnnual ? BLUE : "#D1D5DB" }}
-              >
-                <span
-                  className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
-                  style={{ transform: proAnnual ? "translateX(20px)" : "translateX(0)" }}
-                />
-              </button>
-              <span className={`text-sm font-medium ${proAnnual ? "text-gray-900" : "text-gray-400"}`}>
-                Annuel
-                <span className="ml-1.5 text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded-full">−20%</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {/* Pro */}
-            <div className="bg-white border-2 border-gray-200 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow">
-              <div className="px-7 pt-7 pb-6 border-b border-gray-100">
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Pro</p>
-                <div className="flex items-end gap-1 mb-1">
-                  <span className="text-5xl font-extrabold text-gray-900">{proAnnual ? "64" : "6,50"}</span>
-                  <span className="text-gray-500 mb-2 text-base">€ {proAnnual ? "/an" : "/mois"}</span>
-                </div>
-                {proAnnual
-                  ? <p className="text-xs text-gray-400">soit 5,33 € / mois</p>
-                  : <p className="text-xs text-green-600 font-medium">Ou 64 €/an — économisez 14 €</p>
-                }
-              </div>
-              <ul className="px-7 py-6 space-y-3.5 flex-1">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse bg-white border rule" style={{ minWidth: 560 }}>
+              <caption className="sr-only">
+                Avantages dont bénéficie un salarié, un indépendant seul, et un indépendant adhérent FNAE
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col" className="text-left p-4 border-b rule" />
+                  <th scope="col" className="p-4 border-b border-l rule text-[11px] font-semibold uppercase tracking-[0.1em] w-[110px]" style={{ color: "var(--muted)" }}>
+                    Salarié
+                  </th>
+                  <th scope="col" className="p-4 border-b border-l rule text-[11px] font-semibold uppercase tracking-[0.1em] w-[110px]" style={{ color: "var(--muted)" }}>
+                    Indépendant<br />seul
+                  </th>
+                  <th scope="col" className="p-4 border-b border-l text-[11px] font-semibold uppercase tracking-[0.1em] w-[130px] text-white" style={{ backgroundColor: "var(--ink)", borderColor: "var(--ink)" }}>
+                    Indépendant<br />avec la FNAE
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
                 {[
-                  "CE Club réductions +200 enseignes",
-                  "Annuaire Mon-Presta.fr",
-                  "Hotline juridique illimitée",
-                  "Chatbot juridique 24/7",
-                  "Génération de documents légaux",
-                  "Veille juridique ciblée",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-gray-700">
-                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {f}
-                  </li>
+                  { label: "Comité d'entreprise (CE / CSE)", icon: "building" },
+                  { label: "Réductions enseignes", icon: "tag" },
+                  { label: "Chèques vacances", icon: "sun" },
+                  { label: "Mutuelle négociée", icon: "heart" },
+                ].map((row) => (
+                  <tr key={row.label}>
+                    <th scope="row" className="text-left p-4 border-b rule font-medium">
+                      <span className="flex items-center gap-3">
+                        <span style={{ color: "var(--muted)" }}><Icon name={row.icon} className="w-[18px] h-[18px]" /></span>
+                        <span className="text-[14.5px]">{row.label}</span>
+                      </span>
+                    </th>
+                    <td className="p-4 border-b border-l rule text-center">
+                      <span className="inline-flex" style={{ color: "var(--ok)" }}><Icon name="check" className="w-5 h-5" /></span>
+                      <span className="sr-only">Oui</span>
+                    </td>
+                    <td className="p-4 border-b border-l rule text-center">
+                      <span className="inline-flex" style={{ color: "var(--line-strong)" }}><Icon name="cross" className="w-5 h-5" /></span>
+                      <span className="sr-only">Non</span>
+                    </td>
+                    <td className="p-4 border-b border-l rule text-center" style={{ backgroundColor: "#EEF4F9" }}>
+                      <span className="inline-flex" style={{ color: "var(--ok)" }}><Icon name="check" className="w-5 h-5" /></span>
+                      <span className="sr-only">Oui</span>
+                    </td>
+                  </tr>
                 ))}
-              </ul>
-              <div className="px-7 pb-7">
-                <a
-                  href={proAnnual ? LINKS.proAnnuel : LINKS.proMensuel}
-                  onClick={trackCTA}
-                  style={{ backgroundColor: BLUE }}
-                  className="block text-center py-3.5 rounded-xl font-bold text-white transition hover:opacity-90 text-sm"
-                >
-                  Choisir Pro
-                </a>
-              </div>
-            </div>
+                <tr>
+                  <th scope="row" className="text-left p-4 font-semibold text-[14.5px]">Coût</th>
+                  <td className="p-4 border-l rule text-center text-[13px]" style={{ color: "var(--muted)" }}>
+                    Pris en charge
+                  </td>
+                  <td className="p-4 border-l rule text-center text-[13px]" style={{ color: "var(--muted)" }}>
+                    Aucune offre
+                  </td>
+                  <td className="p-4 border-l rule text-center" style={{ backgroundColor: "#EEF4F9" }}>
+                    <span className="display text-xl" style={{ color: "var(--accent)" }}>64 €</span>
+                    <span className="block text-[11px] mt-0.5" style={{ color: "var(--muted)" }}>par an</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-            {/* Premium */}
-            <div style={{ backgroundColor: BLUE }} className="relative rounded-2xl overflow-hidden flex flex-col shadow-xl">
-              <div className="absolute top-0 right-0">
-                <span style={{ backgroundColor: ORANGE }} className="block text-white text-xs font-bold px-4 py-2 rounded-bl-2xl">
-                  LE PLUS COMPLET
+          <div className="mt-10 text-center">
+            <CTA href="/lp-ce-auto-entrepreneur/choix/">Activer mes avantages</CTA>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Catalogue */}
+      <section className="py-24 px-5 sm:px-8 border-y rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <Eyebrow>Le catalogue en détail</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">
+              Ce qu&apos;il y a vraiment dans votre club réductions
+            </h2>
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              Des milliers d&apos;offres sur votre plateforme adhérent : bons d&apos;achat au montant de votre choix, e-billets disponibles 24h/24 et tarifs négociés sur les sorties. Voici les taux réellement pratiqués, catégorie par catégorie.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 bg-white border rule rounded-[3px] mb-16">
+            {[
+              { value: "4 €", label: "la place de cinéma Pathé" },
+              { value: "−55%", label: "sur les billets Disneyland Paris" },
+              { value: "−31%", label: "sur votre abonnement salle de sport" },
+              { value: "−5%", label: "sur vos courses alimentaires" },
+            ].map((stat, i) => (
+              <div key={stat.label} className={`p-7 ${i > 0 ? "lg:border-l" : ""} ${i % 2 === 1 ? "border-l" : ""} ${i < 2 ? "border-b lg:border-b-0" : ""} rule`}>
+                <p className="display num text-4xl mb-2" style={{ color: "var(--accent)" }}>{stat.value}</p>
+                <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+
+          {/* Mur d'enseignes : les marques du catalogue dont j'ai un vectoriel propre */}
+          <div className="bg-white border rule rounded-[3px] mb-16">
+            <p className="text-[10px] uppercase tracking-[0.2em] px-6 pt-6 pb-5" style={{ color: "var(--muted)" }}>
+              Quelques enseignes du catalogue
+            </p>
+            <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-px" style={{ backgroundColor: "var(--line)" }}>
+              {catalogBrands.map((b) => (
+                <div key={b.name} className="bg-white flex flex-col items-center justify-center gap-2 py-6 px-2">
+                  <img
+                    src={b.logo}
+                    alt={b.name}
+                    title={b.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-7 w-auto max-w-full object-contain transition-opacity duration-300"
+                    style={{ opacity: 0.62 }}
+                  />
+                  <span className="text-[10px] text-center leading-tight" style={{ color: "var(--muted)" }}>{b.name}</span>
+                </div>
+              ))}
+              <div className="bg-white flex items-center justify-center py-6 px-2">
+                <span className="text-[11px] font-semibold text-center leading-tight" style={{ color: "var(--ink)" }}>
+                  + 320 autres
                 </span>
               </div>
-              <div className="px-7 pt-7 pb-6 border-b border-blue-400/40">
-                <p className="text-xs font-bold uppercase tracking-widest text-blue-300 mb-2">Premium</p>
-                <div className="flex items-end gap-1 mb-1">
-                  <span className="text-5xl font-extrabold text-white">{premiumAnnual ? "139" : "12"}</span>
-                  <span className="text-blue-200 mb-2 text-base">€ {premiumAnnual ? "/an" : "/mois"}</span>
-                </div>
-                {premiumAnnual
-                  ? <p className="text-xs text-blue-300">soit 11,58 € / mois</p>
-                  : <p className="text-xs text-blue-200 font-medium">Ou 139 €/an — économisez 5 €</p>
-                }
-              </div>
-              <ul className="px-7 py-6 space-y-3.5 flex-1">
-                {[
-                  "CE Club réductions +200 enseignes",
-                  "Tout le plan Pro inclus",
-                  "Recouvrement d'impayés (CAARL)",
-                  "Médiation des litiges dès 1 €",
-                  "3 visios avocat / an incluses",
-                  "Génération de contrats blindés",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-blue-100">
-                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="px-7 pb-7">
-                <a
-                  href={premiumAnnual ? LINKS.premiumAnnuel : LINKS.premiumMensuel}
-                  onClick={trackCTA}
-                  style={{ backgroundColor: ORANGE }}
-                  className="block text-center py-3.5 rounded-xl font-bold text-white transition hover:opacity-90 text-sm"
-                >
-                  Choisir Premium
-                </a>
-              </div>
             </div>
           </div>
 
+          {[
+            { key: "sorties", label: "Sorties, loisirs & vacances" },
+            { key: "achats", label: "Achats du quotidien & abonnements" },
+          ].map((grp) => {
+            const items = catalog.filter((c) => c.group === grp.key);
+            return (
+              <div key={grp.key} className="mb-16 last:mb-0">
+                <div className="flex items-baseline gap-4 pb-4 mb-7 border-b" style={{ borderColor: "var(--line-strong)" }}>
+                  <h3 className="display text-2xl">{grp.label}</h3>
+                  <span className="num text-xs font-semibold" style={{ color: "var(--muted)" }}>
+                    {items.length} catégories
+                  </span>
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {items.map((cat, i) => <CatalogCard key={cat.title} cat={cat} index={i} />)}
+                </div>
+              </div>
+            );
+          })}
+
+          <div className="mt-14 pt-10 border-t rule flex flex-col sm:flex-row items-start sm:items-center justify-between gap-7">
+            <p className="text-xs max-w-xl leading-relaxed" style={{ color: "var(--muted)" }}>
+              Taux relevés sur la plateforme adhérent et donnés à titre indicatif : ils évoluent selon les opérations des partenaires, les dates et les stocks disponibles. Liste non exhaustive.
+            </p>
+            <CTA href="/lp-ce-auto-entrepreneur/choix/" className="flex-shrink-0">Activer mes avantages</CTA>
+          </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">Questions fréquentes</h2>
-          <div>
-            {faqs.map((faq) => (
-              <FAQItem key={faq.q} q={faq.q} a={faq.a} />
+      {/* ---------------------------------------------------------------- Offres pros */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <Eyebrow>Offres négociées</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">
+              Et aussi : vos assurances et vos outils pros à tarif FNAE
+            </h2>
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              Un CE, ce n&apos;est pas que les loisirs. La FNAE négocie aussi vos contrats d&apos;assurance, votre protection sociale et vos outils du quotidien, avec des conditions réservées aux adhérents.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 pb-4 mb-7 border-b" style={{ borderColor: "var(--line-strong)" }}>
+            <Icon name="shield" className="w-5 h-5" />
+            <h3 className="display text-2xl">Assurance & protection sociale</h3>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4 mb-16">
+            {insuranceOffers.map((offer) => (
+              <article key={offer.name} className="lift bg-white border rule rounded-[3px] p-6 flex flex-col">
+                <div className="flex items-baseline justify-between gap-3 mb-4">
+                  <h4 className="display text-xl">{offer.name}</h4>
+                </div>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {offer.tags.map((tag) => (
+                    <span key={tag} className="text-[10.5px] font-semibold uppercase tracking-[0.08em] px-2 py-1 rounded-[2px]" style={{ backgroundColor: "var(--paper-2)", color: "var(--ink-soft)" }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p className="display text-lg mb-4" style={{ color: "var(--accent)" }}>{offer.price}</p>
+                <p className="text-[13.5px] leading-relaxed flex-1" style={{ color: "var(--muted)" }}>{offer.desc}</p>
+                {offer.perk && (
+                  <p className="text-xs font-semibold mt-5 pt-4 border-t rule flex items-start gap-2" style={{ color: "var(--ok)" }}>
+                    <Icon name="spark" className="w-3.5 h-3.5 mt-px flex-shrink-0" />
+                    <span>Adhérent FNAE : {offer.perk}</span>
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-px" style={{ backgroundColor: "var(--line)" }}>
+            {otherOffers.map((group, gi) => (
+              <div key={group.title} className="bg-white p-7">
+                <div className="flex items-center gap-2.5 pb-4 mb-5 border-b rule">
+                  <Icon name={["card", "clipboard", "scale"][gi]} className="w-[18px] h-[18px]" />
+                  <h3 className="display text-lg">{group.title}</h3>
+                </div>
+                <ul className="space-y-4">
+                  {group.items.map((item) => (
+                    <li key={item.name}>
+                      <span className="font-semibold text-sm">{item.name}</span>
+                      <span className="block text-xs mt-0.5" style={{ color: "var(--muted)" }}>{item.desc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs mt-8 max-w-2xl leading-relaxed" style={{ color: "var(--muted)" }}>
+            Tarifs et garanties indiqués à titre indicatif, selon votre activité et les options choisies. Ces offres s&apos;activent depuis votre espace adhérent, une fois votre adhésion validée.
+          </p>
+
+          <div className="mt-10 pt-10 border-t rule flex flex-col sm:flex-row items-start sm:items-center justify-between gap-7">
+            <p className="text-lg max-w-md leading-snug">
+              Ces conditions sont réservées aux adhérents.{" "}
+              <strong>Votre adhésion ouvre l&apos;accès à toutes.</strong>
+            </p>
+            <CTA href="/lp-ce-auto-entrepreneur/choix/" className="flex-shrink-0">
+              Activer mes avantages
+            </CTA>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Plus qu'un CE */}
+      <section className="py-24 px-5 sm:px-8 border-y rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="max-w-xl mb-14">
+            <Eyebrow>Inclus dans l&apos;adhésion</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">Plus qu&apos;un CE</h2>
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              Votre adhésion inclut aussi des outils concrets pour développer et protéger votre activité.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-x-14 gap-y-px">
+            {[
+              { icon: "bell", title: "Veille juridique ciblée", desc: "Alertes en temps réel sur les évolutions réglementaires qui concernent votre activité. Seuils TVA, plafonds CA, cotisations…" },
+              { icon: "pin", title: "Annuaire Mon-Presta.fr", desc: "Référencez votre activité gratuitement sur l'annuaire dédié aux auto-entrepreneurs pour gagner en visibilité." },
+              { icon: "chat", title: "Chatbot juridique 24/7", desc: "Posez vos questions juridiques à tout moment. Le chatbot répond instantanément sur les sujets courants du statut." },
+              { icon: "award", title: "Badge adhérent FNAE", desc: "Affichez votre appartenance au plus grand syndicat des auto-entrepreneurs pour rassurer vos clients." },
+            ].map((item) => (
+              <div key={item.title} className="py-7 border-b rule flex gap-5">
+                <span className="flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }}>
+                  <Icon name={item.icon} className="w-6 h-6" />
+                </span>
+                <div>
+                  <h3 className="display text-xl mb-2">{item.title}</h3>
+                  <p className="text-[14.5px] leading-relaxed" style={{ color: "var(--muted)" }}>{item.desc}</p>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section style={{ backgroundColor: BLUE }} className="py-16 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Rattrapez les avantages que votre statut ne vous donne pas.</h2>
-          <p className="text-blue-100 text-lg mb-8">64 € par an pour reprendre ce qui vous est dû.</p>
-          <a
-            href={LINKS.proAnnuel}
-            onClick={trackCTA}
-            style={{ backgroundColor: ORANGE }}
-            className="inline-block text-white font-bold px-8 py-4 rounded text-lg hover:opacity-90 transition"
-          >
-            Activer mes avantages →
-          </a>
+      {/* ---------------------------------------------------------------- Avis */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+            <div>
+              <Eyebrow>Ils ont adhéré</Eyebrow>
+              <h2 className="display text-4xl sm:text-5xl mt-5">Ce que disent nos adhérents</h2>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <Stars className="h-[18px]" />
+              <span className="text-sm font-semibold">4,8/5</span>
+              <span className="text-sm" style={{ color: "var(--muted)" }}>· 471 avis</span>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-px" style={{ backgroundColor: "var(--line)" }}>
+            {[
+              { quote: "Avec les réductions FNAE, j'ai économisé 380 € sur mes vacances l'été dernier. L'adhésion s'est rentabilisée 25 fois, et c'est sans compter le cinéma et les abonnements.", name: "Julie B.", role: "Coach sportive, Marseille · Adhérente Pro" },
+              { quote: "J'ai observé avec satisfaction les actions menées par votre organisation qui se positionne comme un véritable rempart pour les entrepreneurs.", name: "Jean-Michel RUBALO", role: "Adhérent depuis 10 ans" },
+              { quote: "Une question complexe reçoit une réponse simple ; tout besoin d'assistance est résolu dans la foulée.", name: "Marc Etienne BOUVIER", role: "Consultant en entreprise" },
+            ].map((t) => (
+              <figure key={t.name} className="bg-white p-8 flex flex-col">
+                <span className="display text-5xl leading-none mb-4" style={{ color: "var(--accent)" }} aria-hidden="true">“</span>
+                <blockquote className="text-[15px] leading-relaxed flex-1" style={{ color: "var(--ink-soft)" }}>{t.quote}</blockquote>
+                <figcaption className="mt-7 pt-5 border-t rule">
+                  <p className="font-semibold text-sm">{t.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{t.role}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="mt-8">
+            <a href="https://fr.trustpilot.com/review/fnae.fr" target="_blank" rel="noopener noreferrer" className="underline-slide text-sm font-semibold" style={{ color: "var(--muted)" }}>
+              Voir tous les avis sur Trustpilot
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ backgroundColor: BLUE_DARK }} className="text-white/70 py-10 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-sm">
-          <div className="bg-white rounded px-3 py-1.5"><img src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png" alt="FNAE" className="h-10 w-auto" /></div>
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 items-center">
-            <a href="tel:+33285528607" className="hover:text-white transition text-white font-medium">02 85 52 86 07</a>
-            <span className="text-white/30 hidden sm:inline">|</span>
-            <a href="https://fnae.fr/mentions-legales/" className="hover:text-white transition">Mentions légales</a>
-            <a href="https://fnae.fr/politique-de-confidentialite/" className="hover:text-white transition">Confidentialité</a>
-            <a href="https://fnae.fr/contact/" className="hover:text-white transition">Contact</a>
+      {/* ---------------------------------------------------------------- Légitimité */}
+      <section className="grain relative overflow-hidden py-24 px-5 sm:px-8" style={{ backgroundColor: "var(--ink)" }}>
+        <div className="relative z-10 max-w-5xl mx-auto text-white">
+          <div className="max-w-2xl mb-14">
+            <h2 className="display text-4xl sm:text-5xl">
+              Un syndicat reconnu par l&apos;État, qui représente les indépendants dans les instances nationales
+            </h2>
           </div>
-          <p>© 2009 – {new Date().getFullYear()} FNAE</p>
+          <div className="grid sm:grid-cols-3 gap-10">
+            {[
+              { icon: "columns", title: "Syndicat représentatif", desc: "Reconnu par l'État depuis 2020 · Fondé en 2009" },
+              { icon: "users", title: "Membre de la CPME", desc: "Confédération des PME · Représentation patronale nationale" },
+              { icon: "clipboard", title: "Instances nationales", desc: "Représentée au CPSTI, CAF, CIPAV et Caisse des Dépôts" },
+            ].map((item) => (
+              <div key={item.title} className="pt-6 border-t" style={{ borderColor: "rgba(255,255,255,0.22)" }}>
+                <span style={{ color: "var(--accent)" }} className="inline-block mb-4"><Icon name={item.icon} className="w-6 h-6" /></span>
+                <h3 className="display text-xl mb-2">{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.62)" }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------- Tarifs (interactif) */}
+      <Pricing />
+
+      {/* ---------------------------------------------------------------- FAQ */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[0.6fr_1fr] gap-12 lg:gap-16">
+          <div className="lg:sticky lg:top-28 self-start">
+            <Eyebrow>Questions fréquentes</Eyebrow>
+            <h2 className="display text-4xl mt-5 mb-6">Tout ce qu&apos;il faut savoir avant d&apos;adhérer</h2>
+            <a href="https://fnae.fr/contact/" className="underline-slide text-sm font-semibold" style={{ color: "var(--blue)" }}>
+              Une autre question ? Contactez-nous
+            </a>
+          </div>
+          <div className="border-t rule">
+            {faqs.map((faq) => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- CTA final */}
+      <section className="grain relative overflow-hidden py-24 px-5 sm:px-8" style={{ backgroundColor: "var(--accent)" }}>
+        <div className="relative z-10 max-w-3xl mx-auto text-center text-white">
+          <h2 className="display text-4xl sm:text-5xl mb-10">
+            Retrouvez vos avantages perdus
+          </h2>
+          <CTA href="/lp-ce-auto-entrepreneur/choix/" variant="light" className="text-base">
+            Activer mes avantages
+          </CTA>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Footer */}
+      <footer className="py-12 px-5 sm:px-8" style={{ backgroundColor: "var(--ink)" }}>
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-7 text-sm">
+          <img src="/logos/fnae-logo-blanc.png" alt="FNAE" loading="lazy" decoding="async" className="h-10 w-auto" />
+          <div className="flex flex-wrap justify-center gap-x-7 gap-y-3 items-center" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <a href="https://fnae.fr/mentions-legales/" className="underline-slide">Mentions légales</a>
+            <a href="https://fnae.fr/politique-de-confidentialite/" className="underline-slide">Confidentialité</a>
+            <a href="https://fnae.fr/contact/" className="underline-slide">Contact</a>
+          </div>
+          <p style={{ color: "rgba(255,255,255,0.45)" }}>© 2009 – {new Date().getFullYear()} FNAE</p>
         </div>
       </footer>
     </div>
