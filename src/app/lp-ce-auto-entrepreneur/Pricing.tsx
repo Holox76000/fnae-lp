@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const LINKS = {
+  essentielAnnuel: "https://fnae.fr/adhesion/essentiel-annuel/",
   proMensuel: "https://fnae.fr/adhesion/pro-mensuel/",
   proAnnuel: "https://fnae.fr/adhesion/pro-annuel/",
   premiumMensuel: "https://fnae.fr/adhesion/premium-mensuel/",
@@ -37,7 +38,7 @@ export default function Pricing() {
 
   return (
           <section id="tarifs" className="py-24 px-5 sm:px-8 border-b rule" style={{ backgroundColor: "var(--paper-2)" }}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <Eyebrow>Tarifs</Eyebrow>
           <h2 className="display text-4xl sm:text-5xl mt-5 mb-4">Rentabilisé dès la 1ère réduction</h2>
@@ -58,7 +59,48 @@ export default function Pricing() {
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* Essentiel */}
+          <div className="bg-white border rule rounded-[3px] flex flex-col">
+            <div className="p-8 border-b rule">
+              <Eyebrow>Essentiel</Eyebrow>
+              <div className="flex items-baseline gap-1.5 mt-4 mb-1">
+                <span className="display num text-6xl">15</span>
+                <span className="display text-xl" style={{ color: "var(--muted)" }}>€ /an</span>
+              </div>
+              <p className="text-[13px]" style={{ color: "var(--muted)" }}>
+                Adhésion syndicale, tarif annuel uniquement
+              </p>
+            </div>
+            <ul className="p-8 space-y-3.5 flex-1">
+              {[
+                "Espace adhérent FNAE",
+                "Alertes réglementaires",
+                "Actualités syndicales",
+                "Badge adhérent FNAE",
+                "Annuaire Mon-Presta.fr",
+              ].map((f) => (
+                <li key={f} className="flex items-start gap-3 text-[14.5px]" style={{ color: "var(--ink-soft)" }}>
+                  <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Check /></span>
+                  {f}
+                </li>
+              ))}
+              <li className="flex items-start gap-3 text-[13px] pt-1" style={{ color: "var(--muted)" }}>
+                Le club réductions +350 enseignes démarre avec l&apos;adhésion Pro.
+              </li>
+            </ul>
+            <div className="px-8 pb-8">
+              <a
+                href={LINKS.essentielAnnuel}
+                onClick={trackCTA}
+                className="block text-center py-4 rounded-[3px] font-semibold text-sm transition-opacity hover:opacity-90"
+                style={{ border: "1px solid var(--line-strong)", color: "var(--ink-soft)" }}
+              >
+                Choisir Essentiel
+              </a>
+            </div>
+          </div>
+
           {/* Pro */}
           <div className="bg-white border rule rounded-[3px] flex flex-col">
             <div className="p-8 border-b rule">

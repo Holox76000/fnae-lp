@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 const LINKS = {
+  essentielAnnuel: "https://fnae.fr/adhesion/essentiel-annuel/",
   proMensuel: "https://fnae.fr/adhesion/pro-mensuel/",
   proAnnuel: "https://fnae.fr/adhesion/pro-annuel/",
   premiumMensuel: "https://fnae.fr/adhesion/premium-mensuel/",
@@ -10,6 +11,22 @@ const LINKS = {
 };
 
 const PLANS = [
+  {
+    key: "essentiel",
+    name: "Essentiel",
+    tag: null,
+    // L'Essentiel n'existe qu'en annuel côté paiement : même offre dans les deux positions du switch.
+    annual: { price: "15", unit: "€ / an", note: "Adhésion syndicale, tarif annuel uniquement", href: LINKS.essentielAnnuel },
+    monthly: { price: "15", unit: "€ / an", note: "Adhésion syndicale, tarif annuel uniquement", href: LINKS.essentielAnnuel },
+    features: [
+      "Espace adhérent FNAE",
+      "Alertes réglementaires",
+      "Actualités syndicales",
+      "Badge adhérent FNAE",
+      "Annuaire Mon-Presta.fr",
+    ],
+    footnote: "Le club réductions +350 enseignes démarre avec l'adhésion Pro.",
+  },
   {
     key: "pro",
     name: "Pro",
@@ -24,6 +41,7 @@ const PLANS = [
       "Génération de documents légaux",
       "Veille juridique ciblée",
     ],
+    footnote: null,
   },
   {
     key: "premium",
@@ -39,6 +57,7 @@ const PLANS = [
       "3 visios avocat / an incluses",
       "Génération de contrats blindés",
     ],
+    footnote: null,
   },
 ];
 
@@ -79,7 +98,7 @@ export default function ChoixPage() {
       </header>
 
       <main className="flex-1 px-5 sm:px-8 py-14 sm:py-20">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <h1 className="display text-4xl sm:text-5xl mb-4">Choisissez votre formule</h1>
             <p className="text-lg" style={{ color: "var(--muted)" }}>
@@ -110,7 +129,7 @@ export default function ChoixPage() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {PLANS.map((plan) => {
               const offer = annual ? plan.annual : plan.monthly;
               const dark = plan.key === "premium";
@@ -148,6 +167,11 @@ export default function ChoixPage() {
                         {f}
                       </li>
                     ))}
+                    {plan.footnote && (
+                      <li className="flex items-start gap-3 text-[13px] pt-1" style={{ color: "var(--muted)" }}>
+                        {plan.footnote}
+                      </li>
+                    )}
                   </ul>
                   <div className="px-8 pb-8">
                     <a
