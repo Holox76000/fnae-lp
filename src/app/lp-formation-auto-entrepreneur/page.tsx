@@ -102,6 +102,21 @@ const MODULES = [
   },
 ];
 
+const STEPS = [
+  {
+    title: "Vous réservez votre échange",
+    desc: "20 minutes avec un conseiller FNAE pour cadrer votre situation, vos objectifs et la session qui vous convient.",
+  },
+  {
+    title: "Vous suivez les 6 modules",
+    desc: "7h30 en visio, en collectif : une journée ou deux demi-journées. Ateliers, quiz et travail individuel entre les modules.",
+  },
+  {
+    title: "Vous repartez outillé",
+    desc: "Livret de formation personnalisé, feuille de route pour votre activité, et un rendez-vous de suivi d'1h (ou deux fois 30 min) inclus.",
+  },
+];
+
 const PAIN_POINTS = [
   {
     title: "Vous repoussez",
@@ -347,7 +362,7 @@ export default function FormationAutoEntrepreneurPage() {
             style={{ backgroundColor: ORANGE }}
             className="text-white px-5 py-2 rounded text-sm font-bold hover:opacity-90 transition"
           >
-            Valider mon financement
+            Préparer ma formation
           </button>
         </div>
       </header>
@@ -359,12 +374,12 @@ export default function FormationAutoEntrepreneurPage() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-5">
-            Maîtrisez votre micro-entreprise.{" "}
+            Maîtrisez votre micro-entreprise{" "}
             <br className="hidden sm:block" />
-            Sans plus jamais paniquer devant l'URSSAF.
+            en 7h30.
           </h1>
           <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            La formation de la FNAE, la seule organisation reconnue représentative au niveau national. Pour ne plus jamais subir l'administratif.
+            URSSAF, TVA, facturation, cotisations, passage en société : la formation collective 100% à distance de la FNAE, la seule organisation d'auto-entrepreneurs reconnue représentative au niveau national.
           </p>
           <div className="flex justify-center">
             <button
@@ -372,30 +387,33 @@ export default function FormationAutoEntrepreneurPage() {
               style={{ backgroundColor: ORANGE }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
-              Valider mon financement
+              Préparer ma formation
             </button>
           </div>
           <p className="mt-5 text-blue-200 text-sm">
-            100% à distance · Animée par les formateurs de la FNAE · Note 9,8/10
+            250 € TTC · 7h30 en collectif · Organisme certifié Qualiopi
+          </p>
+          <p className="mt-2 text-blue-200 text-sm">
+            85 000 auto-entrepreneurs nous font confiance depuis 2009 · 9,8/10, 100% recommandent
           </p>
         </div>
       </section>
 
-      {/* ── 2. BAR D'AUTORITÉ ────────────────────────────────────────────── */}
+      {/* ── 2. LA FICHE FORMATION (tarif, durée, format, certification) ──── */}
       <section className="bg-white border-b border-gray-100 py-8 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-gray-200 text-center">
             <div className="lg:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>85 000</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">auto-entrepreneurs<br />nous font confiance</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>250 €</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">TTC, rendez-vous de<br />suivi individuel inclus</p>
             </div>
             <div className="lg:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>Depuis 2009</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">la seule fédération<br />représentative au niveau national</p>
+              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>7h30</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">de formation en collectif,<br />réparties en 6 modules</p>
             </div>
             <div className="lg:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>9,8/10</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">note moyenne apprenants<br />100% recommandent</p>
+              <p className="text-xl sm:text-3xl lg:text-2xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>100% à distance</p>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">une journée ou<br />deux demi-journées</p>
             </div>
             <div className="lg:px-6">
               <p className="text-base min-[375px]:text-xl sm:text-3xl lg:text-2xl font-extrabold leading-tight whitespace-nowrap min-h-[60px] sm:min-h-[75px] flex items-center justify-center" style={{ color: BLUE }}>Certifié Qualiopi</p>
@@ -414,7 +432,36 @@ export default function FormationAutoEntrepreneurPage() {
         </div>
       </section>
 
-      {/* ── 3. DOULEUR AGITÉE ────────────────────────────────────────────── */}
+      {/* ── 3. MODE D'EMPLOI : ce qui se passe concrètement ──────────── */}
+      <section className="py-14 sm:py-16 px-4 sm:px-6" style={{ backgroundColor: BG_LIGHT }}>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+              Comment ça se passe
+            </h2>
+            <p className="text-gray-500 text-base">
+              Trois étapes, de votre premier échange au suivi post-formation.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {STEPS.map((step, i) => (
+              <div key={step.title} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4"
+                  style={{ backgroundColor: BLUE }}
+                  aria-hidden="true"
+                >
+                  {i + 1}
+                </div>
+                <h3 className="font-bold text-gray-900 mb-2 text-base">{step.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. DOULEUR AGITÉE ────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_MEDIUM }}>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
@@ -451,43 +498,6 @@ export default function FormationAutoEntrepreneurPage() {
         </div>
       </section>
 
-      {/* ── 4. LA PROMESSE ───────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Ce que vous saurez faire après la formation
-            </h2>
-          </div>
-          <div className="space-y-4">
-            {BENEFITS.map((benefit, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-gray-50"
-              >
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-white text-xs font-bold"
-                  style={{ backgroundColor: BLUE }}
-                  aria-hidden="true"
-                >
-                  {i + 1}
-                </div>
-                <p className="text-gray-800 text-sm sm:text-base leading-relaxed">{benefit}</p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <button
-              onClick={openCalendly}
-              style={{ backgroundColor: ORANGE }}
-              className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
-            >
-              Valider mon financement
-            </button>
-          </div>
-        </div>
-      </section>
-
       {/* ── 5. LE PROGRAMME ──────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_LIGHT }}>
         <div className="max-w-4xl mx-auto">
@@ -521,13 +531,26 @@ export default function FormationAutoEntrepreneurPage() {
               </div>
             ))}
           </div>
+          <div className="mt-8 rounded-xl p-6 sm:p-8 bg-white border border-gray-200">
+            <h3 className="font-bold text-gray-900 text-base sm:text-lg mb-5">
+              À la fin de la formation, vous saurez
+            </h3>
+            <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+              {BENEFITS.map((benefit) => (
+                <li key={benefit} className="flex items-start gap-3 text-gray-700 text-sm leading-relaxed">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: ORANGE }} aria-hidden="true" />
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div className="text-center mt-8">
             <button
               onClick={openCalendly}
               style={{ backgroundColor: BLUE }}
               className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
             >
-              Valider mon financement
+              Préparer ma formation
             </button>
           </div>
         </div>
@@ -604,52 +627,7 @@ export default function FormationAutoEntrepreneurPage() {
         </div>
       </section>
 
-      {/* ── 8. MODALITÉS ─────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Une formation pensée pour s'adapter à votre rythme
-            </h2>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-5">
-            {[
-              {
-                title: "Durée",
-                desc: "7h30 de formation en collectif, réparties en 6 modules.",
-              },
-              {
-                title: "Format",
-                desc: "100% à distance, en collectif : une journée ou deux demi-journées.",
-              },
-              {
-                title: "Animation",
-                desc: "Animée par les formateurs experts de la FNAE. Pédagogie active : ateliers, travail de groupe, quiz, travail individuel entre modules.",
-              },
-              {
-                title: "Suivi inclus",
-                desc: "Vous repartez avec votre livret de formation personnalisé. Un rendez-vous post-formation d'1h (ou deux RDV de 30 min) est inclus.",
-              },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="p-6 rounded-xl border border-gray-200"
-                style={{ backgroundColor: BG_LIGHT }}
-              >
-                <h3
-                  className="font-bold text-base mb-2"
-                  style={{ color: BLUE_DARK }}
-                >
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── 10. FAQ ──────────────────────────────────────────────────────── */}
+      {/* ── 8. FAQ ──────────────────────────────────────────────────────── */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
@@ -663,7 +641,7 @@ export default function FormationAutoEntrepreneurPage() {
         </div>
       </section>
 
-      {/* ── 11. CTA FINAL + RÉASSURANCE ──────────────────────────────────── */}
+      {/* ── 9. CTA FINAL + RÉASSURANCE ──────────────────────────────────── */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 text-white" style={{ backgroundColor: BLUE_DARK }}>
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl sm:text-4xl font-bold mb-4">
@@ -677,7 +655,7 @@ export default function FormationAutoEntrepreneurPage() {
             style={{ backgroundColor: ORANGE }}
             className="inline-block text-white font-bold px-10 py-4 rounded text-base hover:opacity-90 transition mb-6"
           >
-            Valider mon financement
+            Préparer ma formation
           </button>
           <div className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-y-1.5 sm:gap-x-8 sm:gap-y-2 text-blue-200 text-xs sm:text-sm">
             <span>Dispensée par un organisme de formation certifié Qualiopi</span>
@@ -731,7 +709,7 @@ export default function FormationAutoEntrepreneurPage() {
           style={{ backgroundColor: ORANGE }}
           className="w-full text-white font-bold py-3.5 rounded text-sm hover:opacity-90 transition"
         >
-          Valider mon financement
+          Préparer ma formation
         </button>
       </div>
     </div>
