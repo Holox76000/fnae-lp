@@ -92,7 +92,7 @@ export default function ChoixPage() {
   };
 
   return (
-    <div className="lp-ce min-h-screen flex flex-col">
+    <div className="lp-ed min-h-screen flex flex-col">
       <header className="py-7 px-5 sm:px-8 flex justify-center border-b rule">
         <img src="/logos/fnae-logo.png" alt="FNAE" className="h-11 w-auto" />
       </header>

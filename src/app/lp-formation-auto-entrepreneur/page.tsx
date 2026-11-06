@@ -1,13 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-
-// ─── Palette FNAE (commune aux LP) ────────────────────────────────────────
-const BLUE = "#1A72B4";
-const BLUE_DARK = "#1565A0";
-const ORANGE = "#ED6952";
-const BG_LIGHT = "#F2F5F8";
-const BG_MEDIUM = "#EBF5FB";
+import { useEffect, useRef } from "react";
+import { CTA, Eyebrow, FAQItem, Icon } from "../ui/editorial";
 
 const CALENDLY_URL = "https://calendly.com/fnaeacademy/preparez-votre-formation";
 const QUALIOPI_CERT_URL =
@@ -69,34 +63,35 @@ function buildCalendlyUrl(): string {
 }
 
 // ─── Données ──────────────────────────────────────────────────────────────
+const FICHE = [
+  { icon: "clock", value: "7h30", label: "de formation en collectif" },
+  { icon: "book", value: "6 modules", label: "du régime au passage de cap" },
+  { icon: "screen", value: "100 % à distance", label: "une journée ou deux demi-journées" },
+  { icon: "shield", value: "Certifié Qualiopi", label: "au titre des actions de formation" },
+];
+
 const MODULES = [
   {
-    num: "01",
     title: "Le régime micro-entreprise : tout comprendre.",
     desc: "Seuils, obligations, droits, fiscalité, protection sociale. La vision d'ensemble.",
   },
   {
-    num: "02",
     title: "Démarches de création.",
     desc: "INPI, URSSAF, code APE, choix du régime fiscal, ACRE, ouverture du compte dédié. Pas à pas.",
   },
   {
-    num: "03",
     title: "Facturation et obligations comptables.",
     desc: "Mentions obligatoires, livre de recettes, conservation des justificatifs, TVA.",
   },
   {
-    num: "04",
     title: "Protection sociale et fiscalité personnelle.",
     desc: "Cotisations, retraite, indemnités journalières, impôt sur le revenu.",
   },
   {
-    num: "05",
     title: "Développement et passage de cap.",
     desc: "Anticiper les seuils, décider du basculement vers EI/EURL/SASU, sécuriser la croissance.",
   },
   {
-    num: "06",
     title: "Outils, méthodes et bon suivi administratif.",
     desc: "Routines, outils, plateforme FNAE Gestion, accès au groupe adhérents.",
   },
@@ -119,22 +114,27 @@ const STEPS = [
 
 const PAIN_POINTS = [
   {
+    icon: "bell",
     title: "Vous repoussez",
     desc: "Vous repoussez l'ouverture de vos courriers URSSAF. À chaque fois, vous craignez la mauvaise nouvelle.",
   },
   {
+    icon: "scale",
     title: "Vous pataugez",
     desc: "Vous pataugez avec la TVA. Vous ne savez pas si vous êtes dans les clous, et personne ne vous l'a vraiment expliqué.",
   },
   {
+    icon: "card",
     title: "Vous improvisez",
     desc: "Vous facturez vos clients sans être sûr de bien faire. Mention obligatoire, taux applicable, conformité : vous improvisez.",
   },
   {
+    icon: "compass",
     title: "Vous êtes perdu(e)",
     desc: "Vous voulez créer votre micro mais vous avez douze onglets ouverts. INPI, URSSAF, code APE, plafonds, TVA : par où commencer ?",
   },
   {
+    icon: "clock",
     title: "Vous procrastinez",
     desc: "Vous avez honte de ne pas tout maîtriser. Du coup, vous n'avez jamais osé demander de l'aide. Et la situation s'aggrave.",
   },
@@ -148,26 +148,37 @@ const BENEFITS = [
   "Repartir avec votre livret de formation personnalisé et une feuille de route concrète.",
 ];
 
-const DIFFERENTIATORS = [
+// Section « Pourquoi choisir une formation avec la FNAE Academy ? »
+const WHY_ACADEMY = [
   {
-    label: "Une fédération qui défend",
-    desc: "En 2025, nous avons fait reculer l'État sur la TVA à 25 000 €. Quand 200 000 micro-entrepreneurs ont été menacés par la réforme, la FNAE s'est mobilisée. La loi du 3 novembre 2025 a confirmé notre victoire. Vous vous formez avec celle qui se bat pour vous.",
-    highlight: true,
+    title: "Des formations conçues pour les micro-entrepreneurs",
+    desc: "La FNAE Academy propose des formations spécifiquement adaptées aux réalités de la micro-entreprise. Vous développez les compétences et les connaissances nécessaires pour créer, gérer et développer votre activité en toute confiance.",
   },
   {
-    label: "Spécialisation 100% micro",
-    desc: "Pas une formation « création d'entreprise » générique. Une formation 100% micro-entreprise, animée par des experts du seul régime qui vous concerne.",
-    highlight: false,
+    title: "Une expertise dédiée à la micro-entreprise",
+    desc: "Fiscalité, TVA, gestion, facturation électronique ou développement commercial : nos formations abordent les sujets essentiels à votre activité, avec des contenus concrets et adaptés à votre quotidien d'entrepreneur.",
   },
   {
-    label: "Légitimité institutionnelle",
-    desc: "Seule organisation d'auto-entrepreneurs reconnue représentative au niveau national. Nous siégeons au CPSTI, à l'URSSAF, aux CAF. Aucun organisme privé ne peut le revendiquer.",
-    highlight: false,
+    title: "Des formateurs experts et engagés",
+    desc: "Bénéficiez de l'accompagnement de formateurs spécialisés, qui maîtrisent les enjeux du régime de la micro-entreprise et vous aident à mieux comprendre vos obligations et à adopter les bonnes pratiques.",
+  },
+];
+
+const LEGITIMACY = [
+  {
+    icon: "shield",
+    title: "Une fédération qui défend",
+    desc: "En 2025, nous avons fait reculer l'État sur la TVA à 25 000 €. La loi du 3 novembre 2025 a confirmé notre victoire. Vous vous formez avec celle qui se bat pour vous.",
   },
   {
-    label: "Pas un gourou. Une fédération.",
-    desc: "Pas de promesse de richesse facile. Pas de programme à 5 000 €. Une formation institutionnelle, sérieuse, dispensée par un organisme certifié Qualiopi, animée par des formateurs experts du régime.",
-    highlight: false,
+    icon: "columns",
+    title: "Légitimité institutionnelle",
+    desc: "Seule organisation d'auto-entrepreneurs reconnue représentative au niveau national. Nous siégeons au CPSTI, à l'URSSAF, aux CAF.",
+  },
+  {
+    icon: "award",
+    title: "Pas un gourou, une fédération",
+    desc: "Pas de promesse de richesse facile, pas de programme à 5 000 €. Une formation institutionnelle, dispensée par un organisme certifié Qualiopi.",
   },
 ];
 
@@ -199,6 +210,13 @@ const TESTIMONIALS = [
   },
 ];
 
+const INCLUDED = [
+  "6 modules, 7h30 de formation en collectif et à distance",
+  "Un livret de formation personnalisé à votre activité",
+  "Un rendez-vous de suivi d'1h après la formation, inclus",
+  "L'accès au groupe privé des adhérents et aux webinaires",
+];
+
 const FAQS = [
   {
     q: "Quelle différence avec une formation gratuite URSSAF ou CCI ?",
@@ -206,7 +224,7 @@ const FAQS = [
   },
   {
     q: "Combien de temps me prendra la formation ?",
-    a: "La formation dure 7h30 au total, en collectif. Vous pouvez la suivre en une journée ou en deux demi-journées. 100% à distance.",
+    a: "La formation dure 7h30 au total, en collectif. Vous pouvez la suivre en une journée ou en deux demi-journées. 100 % à distance.",
   },
   {
     q: "Quel est mon délai d'accès ?",
@@ -218,35 +236,9 @@ const FAQS = [
   },
   {
     q: "Et si je ne suis pas satisfait ?",
-    a: "Nos taux de satisfaction sont publics : 9,8/10 et 100% de recommandation. Si malgré tout vous estimez que la formation ne correspond pas, contactez-nous. Nous trouverons une solution adaptée à votre situation.",
+    a: "Nos taux de satisfaction sont publics : 9,8/10 et 100 % de recommandation. Si malgré tout vous estimez que la formation ne correspond pas, contactez-nous. Nous trouverons une solution adaptée à votre situation.",
   },
 ];
-
-// ─── Composant FAQ ────────────────────────────────────────────────────────
-function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-200">
-      <button
-        className="w-full flex items-center justify-between py-5 text-left gap-4"
-        onClick={() => setOpen(!open)}
-        aria-expanded={open}
-      >
-        <span className="font-semibold text-gray-900 text-sm sm:text-base">{q}</span>
-        <span
-          className="text-xl flex-shrink-0 font-bold"
-          style={{ color: ORANGE }}
-          aria-hidden="true"
-        >
-          {open ? "−" : "+"}
-        </span>
-      </button>
-      {open && (
-        <p className="pb-5 text-gray-600 leading-relaxed text-sm sm:text-base">{a}</p>
-      )}
-    </div>
-  );
-}
 
 // ─── Page principale ──────────────────────────────────────────────────────
 export default function FormationAutoEntrepreneurPage() {
@@ -347,323 +339,415 @@ export default function FormationAutoEntrepreneurPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="lp-ed min-h-screen">
 
-      {/* ── En-tête sticky ──────────────────────────────────────────────── */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <img
-            src="https://fnae.fr/wp-content/uploads/2024/10/Logo-FNAE.png"
-            alt="FNAE"
-            className="h-14 w-auto"
-          />
+      {/* ---------------------------------------------------------------- Header */}
+      <header
+        className="sticky top-0 z-50 border-b rule"
+        style={{ backgroundColor: "rgba(251,248,244,0.88)", backdropFilter: "blur(12px)" }}
+      >
+        <div className="max-w-6xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between gap-4">
+          <img src="/logos/fnae-logo.png" alt="FNAE" width={826} height={254} fetchPriority="high" className="h-11 w-auto" />
           <button
+            type="button"
             onClick={openCalendly}
-            style={{ backgroundColor: ORANGE }}
-            className="text-white px-5 py-2 rounded text-sm font-bold hover:opacity-90 transition"
+            style={{ backgroundColor: "var(--ink)" }}
+            className="text-white px-5 py-2.5 rounded-[3px] text-[13px] font-semibold hover:opacity-90 transition"
           >
             Préparer ma formation
           </button>
         </div>
       </header>
 
-      {/* ── 1. HERO ──────────────────────────────────────────────────────── */}
+      {/* ---------------------------------------------------------------- Hero */}
       <section
-        className="text-white py-16 sm:py-24 px-4 sm:px-6"
-        style={{ backgroundColor: BLUE }}
+        className="grain relative overflow-hidden"
+        style={{
+          backgroundColor: "var(--ink)",
+          backgroundImage:
+            "radial-gradient(80rem 40rem at 78% -10%, rgba(26,114,180,0.55), transparent 60%), radial-gradient(45rem 30rem at 8% 110%, rgba(237,105,82,0.20), transparent 65%)",
+        }}
       >
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-5xl font-bold leading-tight mb-5">
-            Maîtrisez votre micro-entreprise{" "}
-            <br className="hidden sm:block" />
-            en 7h30.
-          </h1>
-          <p className="text-lg sm:text-xl text-blue-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            URSSAF, TVA, facturation, cotisations, passage en société : la formation collective 100% à distance de la FNAE, la seule organisation d'auto-entrepreneurs reconnue représentative au niveau national.
-          </p>
-          <div className="flex justify-center">
-            <button
-              onClick={openCalendly}
-              style={{ backgroundColor: ORANGE }}
-              className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
-            >
-              Préparer ma formation
-            </button>
-          </div>
-          <p className="mt-5 text-blue-200 text-sm">
-            250 € TTC · 7h30 en collectif · Organisme certifié Qualiopi
-          </p>
-          <p className="mt-2 text-blue-200 text-sm">
-            85 000 auto-entrepreneurs nous font confiance depuis 2009 · 9,8/10, 100% recommandent
-          </p>
-        </div>
-      </section>
-
-      {/* ── 2. LA FICHE FORMATION (tarif, durée, format, certification) ──── */}
-      <section className="bg-white border-b border-gray-100 py-8 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-gray-200 text-center">
-            <div className="lg:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>250 €</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">TTC, rendez-vous de<br />suivi individuel inclus</p>
-            </div>
-            <div className="lg:px-6">
-              <p className="text-2xl sm:text-3xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>7h30</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">de formation en collectif,<br />réparties en 6 modules</p>
-            </div>
-            <div className="lg:px-6">
-              <p className="text-xl sm:text-3xl lg:text-2xl font-extrabold leading-tight min-h-[2.5em] flex items-center justify-center" style={{ color: BLUE }}>100% à distance</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">une journée ou<br />deux demi-journées</p>
-            </div>
-            <div className="lg:px-6">
-              <p className="text-base min-[375px]:text-xl sm:text-3xl lg:text-2xl font-extrabold leading-tight whitespace-nowrap min-h-[60px] sm:min-h-[75px] flex items-center justify-center" style={{ color: BLUE }}>Certifié Qualiopi</p>
-              <p className="text-gray-500 text-xs sm:text-sm mt-1 leading-tight">FNAE Academy est certifiée<br className="hidden lg:inline" /> au titre des actions de formation</p>
-              <a
-                href={QUALIOPI_CERT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block mt-1 text-xs underline underline-offset-2 hover:opacity-80 transition"
-                style={{ color: BLUE }}
-              >
-                Voir le certificat
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 3. MODE D'EMPLOI : ce qui se passe concrètement ──────────── */}
-      <section className="py-14 sm:py-16 px-4 sm:px-6" style={{ backgroundColor: BG_LIGHT }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-              Comment ça se passe
-            </h2>
-            <p className="text-gray-500 text-base">
-              Trois étapes, de votre premier échange au suivi post-formation.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {STEPS.map((step, i) => (
-              <div key={step.title} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold mb-4"
-                  style={{ backgroundColor: BLUE }}
-                  aria-hidden="true"
+        <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-0 lg:pt-24">
+          <div className="grid lg:grid-cols-[1.08fr_0.92fr] gap-12 lg:gap-16 items-start pb-16">
+            {/* Colonne récit */}
+            <div className="text-white">
+              <div data-rise style={{ animationDelay: "0ms" }} className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-8">
+                <span
+                  className="text-[11px] font-bold uppercase tracking-[0.14em] px-3 py-1.5 rounded-[3px]"
+                  style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
                 >
-                  {i + 1}
-                </div>
-                <h3 className="font-bold text-gray-900 mb-2 text-base">{step.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                  9,8/10 · 100 % recommandent
+                </span>
+                <span className="text-sm" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  Organisme de formation certifié Qualiopi
+                </span>
+              </div>
+
+              <h1 data-rise style={{ animationDelay: "70ms" }} className="display text-[2.6rem] sm:text-6xl lg:text-[4.1rem] mb-7">
+                Maîtrisez votre{" "}
+                <em className="italic" style={{ color: "var(--accent)" }}>micro-entreprise</em>
+                {" "}en 7h30.
+              </h1>
+
+              <p data-rise className="text-lg sm:text-xl leading-relaxed max-w-2xl" style={{ animationDelay: "140ms", color: "rgba(255,255,255,0.74)" }}>
+                URSSAF, TVA, facturation, cotisations, passage en société : la formation collective 100 % à distance de la{" "}
+                <strong className="font-semibold" style={{ color: "#fff" }}>FNAE Academy</strong>, l&apos;organisme de formation de la seule organisation d&apos;auto-entrepreneurs reconnue représentative au niveau national.
+              </p>
+            </div>
+
+            {/* Colonne offre */}
+            <div data-rise style={{ animationDelay: "280ms" }} className="bg-white rounded-[4px] p-8 sm:p-9">
+              <Eyebrow>Formation · prochaines sessions</Eyebrow>
+              <div className="flex items-baseline gap-2 mt-5 mb-1">
+                <span className="display num text-[4.5rem] leading-none">250</span>
+                <span className="display text-2xl" style={{ color: "var(--muted)" }}>€ TTC</span>
+              </div>
+              <p className="text-sm mb-7" style={{ color: "var(--muted)" }}>
+                7h30 de formation en collectif,{" "}
+                <strong style={{ color: "var(--ink)" }}>rendez-vous de suivi individuel inclus</strong>.
+              </p>
+              <CTA onClick={openCalendly} className="w-full justify-center">
+                Préparer ma formation
+              </CTA>
+              <ul className="mt-7 pt-7 border-t rule space-y-3">
+                {[
+                  "20 minutes avec un conseiller, sans engagement",
+                  "6 modules animés par des experts du régime micro",
+                  "Livret de formation personnalisé à votre activité",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--ink-soft)" }}>
+                    <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bandeau fiche formation */}
+        <div className="relative z-10 border-t" style={{ borderColor: "rgba(255,255,255,0.14)", backgroundColor: "rgba(255,255,255,0.04)" }}>
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 grid grid-cols-2 lg:grid-cols-4">
+            {FICHE.map((f, i) => (
+              <div
+                key={f.value}
+                className={`py-6 lg:px-7 ${i % 2 === 1 ? "pl-6 border-l" : ""} ${i > 0 ? "lg:border-l" : ""} ${i < 2 ? "border-b lg:border-b-0" : ""}`}
+                style={{ borderColor: "rgba(255,255,255,0.14)" }}
+              >
+                <span style={{ color: "var(--accent)" }} className="inline-block mb-2.5">
+                  <Icon name={f.icon} className="w-[18px] h-[18px]" />
+                </span>
+                <p className="display text-lg text-white leading-tight">{f.value}</p>
+                <p className="text-[12.5px] leading-snug mt-1" style={{ color: "rgba(255,255,255,0.55)" }}>{f.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="max-w-6xl mx-auto px-5 sm:px-8 pb-6">
+            <a
+              href={QUALIOPI_CERT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-slide text-xs font-semibold"
+              style={{ color: "rgba(255,255,255,0.6)" }}
+            >
+              Voir le certificat Qualiopi
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Chiffres */}
+      <section className="border-b rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+          <div className="grid sm:grid-cols-3">
+            {[
+              { v: "85 000+", l: "auto-entrepreneurs accompagnés depuis 2009" },
+              { v: "9,8/10", l: "note moyenne de nos apprenants" },
+              { v: "100 %", l: "recommandent la formation" },
+            ].map((s, i) => (
+              <div
+                key={s.l}
+                className={`py-9 px-2 sm:px-6 ${i > 0 ? "border-t sm:border-t-0 sm:border-l" : ""} rule`}
+              >
+                <p className="display num text-4xl mb-1.5">{s.v}</p>
+                <p className="text-[13px] leading-snug" style={{ color: "var(--muted)" }}>{s.l}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 4. DOULEUR AGITÉE ────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_MEDIUM }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+      {/* ---------------------------------------------------------------- Soutiens */}
+      <section className="py-12 px-5 sm:px-8 border-b rule">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-[10px] uppercase tracking-[0.2em] mb-8" style={{ color: "var(--muted)" }}>
+            La FNAE siège dans les instances nationales
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-7">
+            {[
+              { src: "/logos/dgfip.svg", alt: "Direction Générale des Finances Publiques" },
+              { src: "/logos/urssaf.svg", alt: "Urssaf" },
+              { src: "/logos/inpi.svg", alt: "INPI" },
+              { src: "/logos/cpsti.png", alt: "CPSTI" },
+              { src: "/logos/cipav.svg", alt: "La CIPAV" },
+              { src: "/logos/caisse-depots.svg", alt: "Caisse des Dépôts" },
+            ].map((logo) => (
+              <img key={logo.alt} src={logo.src} alt={logo.alt} loading="lazy" decoding="async" className="h-9 object-contain transition-all duration-500 hover:opacity-100" style={{ filter: "grayscale(100%)", opacity: 0.45 }} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Le manque */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <Eyebrow>Le point de départ</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">
               Vous vous reconnaissez ?
             </h2>
-            <p className="text-gray-500 text-base max-w-xl mx-auto">
-              Les auto-entrepreneurs qui rejoignent notre formation arrivent souvent avec une de ces situations.
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              Les auto-entrepreneurs qui rejoignent notre formation arrivent presque toujours avec une de ces cinq situations.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+
+          <div className="grid sm:grid-cols-2 gap-x-14 gap-y-px">
             {PAIN_POINTS.map((item) => (
-              <div
-                key={item.title}
-                className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm"
-              >
-                <div className="flex items-start gap-3">
-                  <div
-                    className="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                    style={{ backgroundColor: ORANGE }}
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">{item.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
+              <div key={item.title} className="py-7 border-b rule flex gap-5">
+                <span className="flex-shrink-0 mt-0.5" style={{ color: "var(--accent)" }}>
+                  <Icon name={item.icon} className="w-6 h-6" />
+                </span>
+                <div>
+                  <h3 className="display text-xl mb-2">{item.title}</h3>
+                  <p className="text-[14.5px] leading-relaxed" style={{ color: "var(--muted)" }}>{item.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-          <p className="text-center mt-8 text-gray-600 font-medium">
-            Vous n'êtes pas seul. C'est exactement pour cela que la FNAE forme les auto-entrepreneurs depuis 2009.
+
+          <p className="mt-12 text-lg leading-snug max-w-2xl">
+            Vous n&apos;êtes pas seul.{" "}
+            <strong>C&apos;est exactement pour cela que la FNAE forme les auto-entrepreneurs depuis 2009.</strong>
           </p>
         </div>
       </section>
 
-      {/* ── 5. LE PROGRAMME ──────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_LIGHT }}>
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-              Devenir un auto-entrepreneur serein
-            </h2>
-            <p className="text-gray-500 text-base">
-              6 modules, 7h30 au total, animés par des experts du régime micro.
+      {/* ---------------------------------------------------------------- Mode d'emploi */}
+      <section className="py-24 px-5 sm:px-8 border-y rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <Eyebrow>Mode d&apos;emploi</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">Comment ça se passe</h2>
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              Trois étapes, de votre premier échange au rendez-vous de suivi post-formation.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {MODULES.map((mod) => (
-              <div
-                key={mod.num}
-                className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm"
-              >
-                <div className="flex items-start gap-4">
-                  <span
-                    className="text-2xl font-extrabold flex-shrink-0 leading-none"
-                    style={{ color: BG_MEDIUM }}
-                    aria-hidden="true"
-                  >
-                    {mod.num}
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">{mod.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{mod.desc}</p>
-                  </div>
-                </div>
+          <div className="grid sm:grid-cols-3 gap-px" style={{ backgroundColor: "var(--line)" }}>
+            {STEPS.map((step, i) => (
+              <div key={step.title} className="bg-white p-8">
+                <p className="num text-[11px] font-semibold tracking-[0.18em] mb-5" style={{ color: "var(--accent)" }}>
+                  ÉTAPE {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="display text-xl mb-3">{step.title}</h3>
+                <p className="text-[14.5px] leading-relaxed" style={{ color: "var(--muted)" }}>{step.desc}</p>
               </div>
             ))}
           </div>
-          <div className="mt-8 rounded-xl p-6 sm:p-8 bg-white border border-gray-200">
-            <h3 className="font-bold text-gray-900 text-base sm:text-lg mb-5">
-              À la fin de la formation, vous saurez
-            </h3>
-            <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- Programme */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <Eyebrow>Le programme</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">
+              Devenir un auto-entrepreneur serein
+            </h2>
+            <p className="text-lg leading-relaxed" style={{ color: "var(--muted)" }}>
+              6 modules, 7h30 au total, animés par des experts du régime micro. Du premier jour de votre activité jusqu&apos;au passage de cap.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {MODULES.map((mod, i) => (
+              <article key={mod.title} className="lift bg-white border rule rounded-[3px] p-6 flex flex-col">
+                <p className="num text-[11px] font-semibold tracking-[0.18em] pb-4 mb-4 border-b rule" style={{ color: "var(--muted)" }}>
+                  MODULE {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="display text-xl mb-3">{mod.title}</h3>
+                <p className="text-[13.5px] leading-relaxed flex-1" style={{ color: "var(--muted)" }}>{mod.desc}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-10 bg-white border rule rounded-[3px] p-8 sm:p-10">
+            <h3 className="display text-2xl mb-7">À la fin de la formation, vous saurez</h3>
+            <ul className="grid sm:grid-cols-2 gap-x-12 gap-y-4">
               {BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 text-gray-700 text-sm leading-relaxed">
-                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: ORANGE }} aria-hidden="true" />
+                <li key={benefit} className="flex items-start gap-3 text-[14.5px] leading-relaxed" style={{ color: "var(--ink-soft)" }}>
+                  <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
                   {benefit}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="text-center mt-8">
-            <button
-              onClick={openCalendly}
-              style={{ backgroundColor: BLUE }}
-              className="text-white font-bold px-8 py-4 rounded text-base hover:opacity-90 transition"
-            >
-              Préparer ma formation
-            </button>
+
+          <div className="mt-10 text-center sm:text-left">
+            <CTA onClick={openCalendly}>Préparer ma formation</CTA>
           </div>
         </div>
       </section>
 
-      {/* ── 6. DIFFÉRENCIATION ───────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
+      {/* ------------------------------------------------- Pourquoi la FNAE Academy */}
+      <section className="py-24 px-5 sm:px-8 border-y rule" style={{ backgroundColor: "var(--paper-2)" }}>
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Pourquoi se former avec la FNAE ACADEMY plutôt qu'avec un autre organisme ?
+          <div className="text-center mb-14">
+            <Eyebrow>Notre approche</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5">
+              Pourquoi choisir une formation<br className="hidden sm:block" /> avec la FNAE Academy ?
             </h2>
           </div>
           <div className="space-y-4">
-            {DIFFERENTIATORS.map((item) => (
-              <div
-                key={item.label}
-                className={`rounded-xl p-6 border ${item.highlight ? "border-0" : "border-gray-200"}`}
-                style={item.highlight ? { backgroundColor: BLUE_DARK } : undefined}
-              >
-                <h3
-                  className={`font-bold text-base sm:text-lg mb-2 ${item.highlight ? "text-white" : "text-gray-900"}`}
-                >
-                  {item.label}
-                </h3>
-                <p
-                  className={`text-sm sm:text-base leading-relaxed ${item.highlight ? "text-blue-200" : "text-gray-600"}`}
-                >
-                  {item.desc}
-                </p>
-              </div>
+            {WHY_ACADEMY.map((item) => (
+              <article key={item.title} className="lift bg-white border rule rounded-[3px] p-7 sm:p-8">
+                <h3 className="display text-xl sm:text-2xl mb-3">{item.title}</h3>
+                <p className="text-[15px] leading-relaxed" style={{ color: "var(--muted)" }}>{item.desc}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 7. PREUVE SOCIALE ────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6" style={{ backgroundColor: BG_LIGHT }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-10">
-            <div
-              className="inline-block px-5 py-2 rounded-full mb-4 text-white text-sm font-bold"
-              style={{ backgroundColor: BLUE }}
-            >
-              9,8/10 · 100% recommandent
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Ce qu'en disent nos apprenants
+      {/* ---------------------------------------------------------------- Légitimité */}
+      <section className="grain relative overflow-hidden py-24 px-5 sm:px-8" style={{ backgroundColor: "var(--ink)" }}>
+        <div className="relative z-10 max-w-5xl mx-auto text-white">
+          <div className="max-w-2xl mb-14">
+            <h2 className="display text-4xl sm:text-5xl">
+              Vous vous formez avec la fédération qui défend les auto-entrepreneurs
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t) => (
-              <div
-                key={t.name}
-                className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col gap-4"
-              >
-                <div className="flex gap-0.5" aria-label="5 étoiles">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-4 h-4" viewBox="0 0 20 20" fill="#FBBF24" aria-hidden="true">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <blockquote className="text-gray-700 text-sm leading-relaxed flex-1 italic">
-                  « {t.text} »
-                </blockquote>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-gray-400 text-xs">{t.date}</p>
-                </div>
+          <div className="grid sm:grid-cols-3 gap-10">
+            {LEGITIMACY.map((item) => (
+              <div key={item.title} className="pt-6 border-t" style={{ borderColor: "rgba(255,255,255,0.22)" }}>
+                <span style={{ color: "var(--accent)" }} className="inline-block mb-4"><Icon name={item.icon} className="w-6 h-6" /></span>
+                <h3 className="display text-xl mb-2">{item.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.62)" }}>{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 8. FAQ ──────────────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10">
-            Questions fréquentes
-          </h2>
-          <div>
-            {FAQS.map((faq) => (
-              <FAQItem key={faq.q} q={faq.q} a={faq.a} />
+      {/* ---------------------------------------------------------------- Avis */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14">
+            <div>
+              <Eyebrow>Ils ont suivi la formation</Eyebrow>
+              <h2 className="display text-4xl sm:text-5xl mt-5">Ce qu&apos;en disent nos apprenants</h2>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span className="display text-2xl">9,8/10</span>
+              <span className="text-sm" style={{ color: "var(--muted)" }}>· 100 % recommandent</span>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {TESTIMONIALS.map((t) => (
+              <figure key={t.name} className="lift bg-white border rule rounded-[3px] p-7 flex flex-col">
+                <span className="display text-5xl leading-none mb-4" style={{ color: "var(--accent)" }} aria-hidden="true">“</span>
+                <blockquote className="text-[14.5px] leading-relaxed flex-1" style={{ color: "var(--ink-soft)" }}>{t.text}</blockquote>
+                <figcaption className="mt-7 pt-5 border-t rule">
+                  <p className="font-semibold text-sm">{t.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--muted)" }}>{t.date}</p>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── 9. CTA FINAL + RÉASSURANCE ──────────────────────────────────── */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 text-white" style={{ backgroundColor: BLUE_DARK }}>
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold mb-4">
-            Prêt à ne plus subir l'administratif ?
-          </h2>
-          <p className="text-blue-200 text-base sm:text-lg mb-8 max-w-xl mx-auto">
-            Rejoignez les milliers d'auto-entrepreneurs qui ont arrêté de patauger, et qui se forment avec la fédération qui les défend.
-          </p>
-          <button
-            onClick={openCalendly}
-            style={{ backgroundColor: ORANGE }}
-            className="inline-block text-white font-bold px-10 py-4 rounded text-base hover:opacity-90 transition mb-6"
-          >
-            Préparer ma formation
-          </button>
-          <div className="flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-y-1.5 sm:gap-x-8 sm:gap-y-2 text-blue-200 text-xs sm:text-sm">
-            <span>Dispensée par un organisme de formation certifié Qualiopi</span>
-            <span>Animée par les formateurs experts de la FNAE</span>
-            <span>9,8/10 de note apprenants</span>
-            <span>100% recommandent</span>
+      {/* ---------------------------------------------------------------- Tarif */}
+      <section id="tarif" className="py-24 px-5 sm:px-8 border-y rule" style={{ backgroundColor: "var(--paper-2)" }}>
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[1fr_0.9fr] gap-12 lg:gap-16 items-start">
+          <div>
+            <Eyebrow>Tarif</Eyebrow>
+            <h2 className="display text-4xl sm:text-5xl mt-5 mb-6">
+              250 € TTC, suivi individuel compris
+            </h2>
+            <p className="text-lg leading-relaxed mb-8" style={{ color: "var(--muted)" }}>
+              Un tarif unique, annoncé d&apos;avance, sans option ni module à rallonge. La FNAE Academy est un organisme de formation certifié Qualiopi : selon votre situation, la formation peut être prise en charge par votre fonds de formation professionnelle.
+            </p>
+            <a
+              href={QUALIOPI_CERT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline-slide text-sm font-semibold"
+              style={{ color: "var(--blue)" }}
+            >
+              Voir le certificat Qualiopi
+            </a>
           </div>
-          <p className="mt-8 text-blue-300 text-sm">
+
+          <div className="bg-white border rule rounded-[3px] p-8 sm:p-9">
+            <div className="flex items-baseline gap-2 mb-1">
+              <span className="display num text-6xl leading-none">250</span>
+              <span className="display text-xl" style={{ color: "var(--muted)" }}>€ TTC</span>
+            </div>
+            <p className="text-[13px] mb-7" style={{ color: "var(--muted)" }}>
+              Pour la formation complète, rendez-vous de suivi inclus
+            </p>
+            <ul className="space-y-3.5 mb-8">
+              {INCLUDED.map((item) => (
+                <li key={item} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--ink-soft)" }}>
+                  <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <CTA onClick={openCalendly} className="w-full justify-center">
+              Préparer ma formation
+            </CTA>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- FAQ */}
+      <section className="py-24 px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-[0.6fr_1fr] gap-12 lg:gap-16">
+          <div className="lg:sticky lg:top-28 self-start">
+            <Eyebrow>Questions fréquentes</Eyebrow>
+            <h2 className="display text-4xl mt-5 mb-6">Tout ce qu&apos;il faut savoir avant de vous inscrire</h2>
+            <a href="tel:+33628059351" onClick={trackPhoneClick} className="underline-slide text-sm font-semibold" style={{ color: "var(--blue)" }}>
+              Une autre question ? 06 28 05 93 51
+            </a>
+          </div>
+          <div className="border-t rule">
+            {FAQS.map((faq) => <FAQItem key={faq.q} q={faq.q} a={faq.a} />)}
+          </div>
+        </div>
+      </section>
+
+      {/* ---------------------------------------------------------------- CTA final */}
+      <section className="grain relative overflow-hidden py-24 px-5 sm:px-8" style={{ backgroundColor: "var(--accent)" }}>
+        <div className="relative z-10 max-w-3xl mx-auto text-center text-white">
+          <h2 className="display text-4xl sm:text-5xl mb-5">
+            Prêt à maîtriser la micro-entreprise ?
+          </h2>
+          <p className="text-lg leading-relaxed mb-10 max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.85)" }}>
+            Découvrir notre formation et développer les compétences essentielles pour entreprendre en toute confiance.
+          </p>
+          <CTA onClick={openCalendly} variant="light" className="text-base">
+            Préparer ma formation
+          </CTA>
+          <div className="mt-10 flex flex-col sm:flex-row sm:flex-wrap items-center justify-center gap-y-2 sm:gap-x-8 text-sm" style={{ color: "rgba(255,255,255,0.8)" }}>
+            <span>Organisme de formation certifié Qualiopi</span>
+            <span>Animée par les formateurs experts de la FNAE</span>
+            <span>9,8/10 · 100 % recommandent</span>
+          </div>
+          <p className="mt-8 text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>
             Une question ?{" "}
             <a
               href="tel:+33628059351"
@@ -677,37 +761,39 @@ export default function FormationAutoEntrepreneurPage() {
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
-      <footer
-        className="pt-10 pb-28 sm:pb-10 px-4 sm:px-6 text-white/60 text-xs"
-        style={{ backgroundColor: "#061F30" }}
-      >
-        <div className="max-w-6xl mx-auto space-y-4">
-          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-white/80 text-sm">
-            <a href="/mentions-legales" className="hover:text-white transition">Mentions légales</a>
-            <a href="/politique-de-confidentialite" className="hover:text-white transition">Politique de confidentialité</a>
-            <a href="/cgv" className="hover:text-white transition">CGV</a>
-            <a href="/cgu" className="hover:text-white transition">CGU</a>
-            <a href="/reglement-interieur" className="hover:text-white transition">Règlement intérieur</a>
-            <a href="/contact" className="hover:text-white transition">Contact</a>
+      {/* ---------------------------------------------------------------- Footer */}
+      <footer className="py-12 pb-28 sm:pb-12 px-5 sm:px-8" style={{ backgroundColor: "var(--ink)" }}>
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-7 text-sm">
+            <img src="/logos/fnae-logo-blanc.png" alt="FNAE" loading="lazy" decoding="async" className="h-10 w-auto" />
+            <div className="flex flex-wrap justify-center gap-x-7 gap-y-3 items-center" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <a href="/mentions-legales" className="underline-slide">Mentions légales</a>
+              <a href="/politique-de-confidentialite" className="underline-slide">Confidentialité</a>
+              <a href="/cgv" className="underline-slide">CGV</a>
+              <a href="/cgu" className="underline-slide">CGU</a>
+              <a href="/reglement-interieur" className="underline-slide">Règlement intérieur</a>
+              <a href="/contact" className="underline-slide">Contact</a>
+            </div>
           </div>
-          <p className="text-center leading-relaxed max-w-3xl mx-auto">
-            SAS FNAE Academy · Déclaration d'activité enregistrée sous le numéro 11788786378 auprès du préfet de région d'Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l'État · FNAE Academy est certifiée Qualiopi. La certification qualité a été délivrée au titre de la catégorie d'actions suivante : actions de formation (<a href={QUALIOPI_CERT_URL} target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition">voir le certificat Qualiopi</a>) · Formations adaptées aux handicaps.
+          <p className="text-xs leading-relaxed max-w-4xl" style={{ color: "rgba(255,255,255,0.45)" }}>
+            SAS FNAE Academy · Déclaration d&apos;activité enregistrée sous le numéro 11788786378 auprès du préfet de région d&apos;Île-de-France · SIRET 90087338100025 · Cet enregistrement ne vaut pas agrément de l&apos;État · FNAE Academy est certifiée Qualiopi. La certification qualité a été délivrée au titre de la catégorie d&apos;actions suivante : actions de formation (<a href={QUALIOPI_CERT_URL} target="_blank" rel="noopener noreferrer" className="underline-slide">voir le certificat Qualiopi</a>) · Formations adaptées aux handicaps.
           </p>
-          <p className="text-center text-white/40">
+          <p className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
             © 2009 – 2026 FNAE Academy
           </p>
         </div>
       </footer>
 
-      {/* ── Barre sticky mobile (CTA bas de page) ────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t border-white/10 p-3"
-        style={{ backgroundColor: BLUE_DARK }}
+      {/* ------------------------------------------- Barre sticky mobile (CTA) */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-40 sm:hidden border-t p-3"
+        style={{ backgroundColor: "var(--ink)", borderColor: "rgba(255,255,255,0.14)" }}
       >
         <button
+          type="button"
           onClick={openCalendly}
-          style={{ backgroundColor: ORANGE }}
-          className="w-full text-white font-bold py-3.5 rounded text-sm hover:opacity-90 transition"
+          style={{ backgroundColor: "var(--accent)" }}
+          className="w-full text-white font-semibold py-3.5 rounded-[3px] text-sm hover:opacity-90 transition"
         >
           Préparer ma formation
         </button>
