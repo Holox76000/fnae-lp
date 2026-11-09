@@ -19,13 +19,15 @@ const PLANS = [
     annual: { price: "15", unit: "€ / an", note: "Adhésion syndicale, tarif annuel uniquement", href: LINKS.essentielAnnuel },
     monthly: { price: "15", unit: "€ / an", note: "Adhésion syndicale, tarif annuel uniquement", href: LINKS.essentielAnnuel },
     features: [
+      "CE Club réductions +350 enseignes",
+      "Chatbot juridique 24/7",
       "Espace adhérent FNAE",
       "Alertes réglementaires",
       "Actualités syndicales",
       "Badge adhérent FNAE",
       "Annuaire Mon-Presta.fr",
     ],
-    footnote: "Le club réductions +350 enseignes démarre avec l'adhésion Pro.",
+    footnote: null,
   },
   {
     key: "pro",

@@ -74,6 +74,8 @@ export default function Pricing() {
             </div>
             <ul className="p-8 space-y-3.5 flex-1">
               {[
+                "CE Club réductions +350 enseignes",
+                "Chatbot juridique 24/7",
                 "Espace adhérent FNAE",
                 "Alertes réglementaires",
                 "Actualités syndicales",
@@ -85,9 +87,6 @@ export default function Pricing() {
                   {f}
                 </li>
               ))}
-              <li className="flex items-start gap-3 text-[13px] pt-1" style={{ color: "var(--muted)" }}>
-                Le club réductions +350 enseignes démarre avec l&apos;adhésion Pro.
-              </li>
             </ul>
             <div className="px-8 pb-8">
               <a
