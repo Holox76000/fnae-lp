@@ -588,7 +588,8 @@ export default function CEPage() {
         }}
       >
         <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 pt-16 pb-0 lg:pt-24">
-          <div className="max-w-3xl pb-16">
+          <div className="grid lg:grid-cols-[1.08fr_0.92fr] gap-12 lg:gap-16 items-start pb-16">
+            {/* Colonne récit */}
             <div className="text-white">
               <div data-rise style={{ animationDelay: "0ms" }} className="flex items-center gap-3 mb-8">
                 <Stars className="h-[18px]" />
@@ -607,19 +608,29 @@ export default function CEPage() {
                 <strong className="font-semibold" style={{ color: "#fff" }}>+350 enseignes</strong>{" "}
                 (cinéma, parcs, vacances, courses, abonnements), et vos assurances, mutuelle et outils pros à tarif FNAE.
               </p>
+            </div>
 
-              <div data-rise style={{ animationDelay: "210ms" }} className="mt-10">
-                <CTA href="/lp-ce-auto-entrepreneur/choix/">Activer mes avantages</CTA>
+            {/* Colonne offre */}
+            <div data-rise style={{ animationDelay: "280ms" }} className="bg-white rounded-[4px] p-8 sm:p-9" >
+              <Eyebrow>Adhésion Pro · sans engagement</Eyebrow>
+              <div className="flex items-baseline gap-2 mt-5 mb-1">
+                <span className="display num text-[4.5rem] leading-none">64</span>
+                <span className="display text-2xl" style={{ color: "var(--muted)" }}>€ / an</span>
               </div>
-
-              <ul data-rise style={{ animationDelay: "280ms" }} className="mt-9 flex flex-col sm:flex-row sm:flex-wrap gap-x-8 gap-y-3">
+              <p className="text-sm mb-7" style={{ color: "var(--muted)" }}>
+                soit <strong style={{ color: "var(--ink)" }}>5,33 € / mois</strong>, rentabilisé dès la première réduction utilisée.
+              </p>
+              <CTA href="/lp-ce-auto-entrepreneur/choix/" className="w-full justify-center">
+                Activer mes avantages
+              </CTA>
+              <ul className="mt-7 pt-7 border-t rule space-y-3">
                 {[
                   "Accès immédiat au catalogue complet",
                   "Bons d'achat et e-billets en quelques clics",
                   "Résiliable à tout moment",
                 ].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>
-                    <span style={{ color: "var(--accent)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
+                  <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--ink-soft)" }}>
+                    <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>
                     {f}
                   </li>
                 ))}
