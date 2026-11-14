@@ -1,24 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { CTA, Eyebrow, FAQItem, Icon } from "../ui/editorial";
+import { fbqTrack, pushEvent, useViewContent } from "../ui/tracking";
 
 const CALENDLY_URL = "https://calendly.com/fnaeacademy/preparez-votre-formation";
 const QUALIOPI_CERT_URL =
   "https://www.formation-autoentrepreneur.fr/wp-content/uploads/2025/08/Reedition-certificat-nveau-NDA-08-2025-FNAE-ACADEMY.pdf";
-
-// ─── Tracking dataLayer ───────────────────────────────────────────────────
-function pushEvent(name: string, params?: Record<string, unknown>) {
-  const w = window as { dataLayer?: object[] };
-  w.dataLayer = w.dataLayer || [];
-  w.dataLayer.push({ event: name, ...params });
-}
-
-// ─── Pixel Meta (envoi direct, sans dépendre du mapping GTM) ──────────────
-function fbqTrack(name: string, params?: Record<string, unknown>) {
-  const w = window as unknown as { fbq?: (...args: unknown[]) => void };
-  if (typeof w.fbq === "function") w.fbq("track", name, params);
-}
 
 // ─── Attribution Calendly ─────────────────────────────────────────────────
 const UTM_KEYS = [
@@ -242,9 +230,9 @@ const FAQS = [
 
 // ─── Page principale ──────────────────────────────────────────────────────
 export default function FormationAutoEntrepreneurPage() {
-  const contentViewedRef = useRef(false);
+  useViewContent("formation_ae");
 
-  // PageView + scroll tracking + Calendly assets + Calendly event listener
+  // PageView + Calendly assets + Calendly event listener
   useEffect(() => {
     pushEvent("PageView");
 
@@ -281,16 +269,6 @@ export default function FormationAutoEntrepreneurPage() {
       document.head.appendChild(script);
     }
 
-    const handleScroll = () => {
-      if (contentViewedRef.current) return;
-      const scrolled = window.scrollY + window.innerHeight;
-      const total = document.body.scrollHeight;
-      if (scrolled / total >= 0.5) {
-        pushEvent("ViewContent", { content_name: "formation_ae" });
-        contentViewedRef.current = true;
-      }
-    };
-
     // Tracking Calendly : event_scheduled (= RDV pris) → event Meta "Schedule"
     const handleMessage = (e: MessageEvent) => {
       // Seul le widget Calendly peut déclencher une conversion
@@ -312,12 +290,8 @@ export default function FormationAutoEntrepreneurPage() {
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("message", handleMessage);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("message", handleMessage);
-    };
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
   const openCalendly = () => {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useViewContent } from "../ui/tracking";
 
 const BLUE = "#1A72B4";
 const BLUE_DARK = "#1565A0";
@@ -189,6 +190,8 @@ function PricingCard({ plan }: { plan: typeof pricingPlans[number] }) {
 }
 
 export default function ConformitePage() {
+  useViewContent("conformite_micro_entreprise");
+
   useEffect(() => {
     const w = window as any;
     if (w.fbq) return;

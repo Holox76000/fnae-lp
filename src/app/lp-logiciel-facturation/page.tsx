@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useViewContent } from "../ui/tracking";
 
 const BLUE = "#1A72B4";
 const BLUE_DARK = "#1565A0";
@@ -135,6 +136,8 @@ function InvoiceMockup() {
 
 export default function LogicielPage() {
   const [annual, setAnnual] = useState(true);
+  useViewContent("logiciel_facturation");
+
   useEffect(() => {
     const w = window as any;
     if (w.fbq) return;

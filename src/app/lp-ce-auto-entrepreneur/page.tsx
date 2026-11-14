@@ -557,7 +557,7 @@ export default function CEPage() {
 
   return (
     <div className="lp-ed min-h-screen">
-      <Pixel />
+      <Pixel contentName="ce_auto_entrepreneur" />
 
       {/* ---------------------------------------------------------------- Header */}
       <header
@@ -612,13 +612,13 @@ export default function CEPage() {
 
             {/* Colonne offre */}
             <div data-rise style={{ animationDelay: "280ms" }} className="bg-white rounded-[4px] p-8 sm:p-9" >
-              <Eyebrow>Adhésion Pro · sans engagement</Eyebrow>
+              <Eyebrow>Adhésion Essentiel · à partir de</Eyebrow>
               <div className="flex items-baseline gap-2 mt-5 mb-1">
-                <span className="display num text-[4.5rem] leading-none">64</span>
+                <span className="display num text-[4.5rem] leading-none">15</span>
                 <span className="display text-2xl" style={{ color: "var(--muted)" }}>€ / an</span>
               </div>
               <p className="text-sm mb-7" style={{ color: "var(--muted)" }}>
-                soit <strong style={{ color: "var(--ink)" }}>5,33 € / mois</strong>, rentabilisé dès la première réduction utilisée.
+                soit <strong style={{ color: "var(--ink)" }}>1,25 € / mois</strong>, rentabilisé dès la première réduction utilisée.
               </p>
               <CTA href="/lp-ce-auto-entrepreneur/choix/" className="w-full justify-center">
                 Activer mes avantages
@@ -627,7 +627,7 @@ export default function CEPage() {
                 {[
                   "Accès immédiat au catalogue complet",
                   "Bons d'achat et e-billets en quelques clics",
-                  "Résiliable à tout moment",
+                  "Chatbot juridique 24/7 inclus",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2.5 text-sm" style={{ color: "var(--ink-soft)" }}>
                     <span style={{ color: "var(--ok)" }} className="mt-0.5 flex-shrink-0"><Icon name="check" className="w-4 h-4" /></span>

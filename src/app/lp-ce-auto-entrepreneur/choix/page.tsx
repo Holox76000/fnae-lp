@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useViewContent } from "../../ui/tracking";
 
 const LINKS = {
   essentielAnnuel: "https://fnae.fr/adhesion/essentiel-annuel/",
@@ -73,6 +74,8 @@ function Check() {
 
 export default function ChoixPage() {
   const [annual, setAnnual] = useState(true);
+
+  useViewContent("ce_choix");
 
   useEffect(() => {
     const w = window as any;

@@ -2,11 +2,18 @@
 
 import { useEffect } from "react";
 
+import { useViewContent } from "../ui/tracking";
+
 /**
  * Pixel Meta, chargé après le premier rendu et en tâche de fond :
  * il ne doit pas entrer en concurrence avec l'affichage de la page.
+ *
+ * Porte aussi le ViewContent de la page : la LP elle-même est rendue côté
+ * serveur, elle ne peut pas appeler de hook.
  */
-export default function Pixel() {
+export default function Pixel({ contentName }: { contentName: string }) {
+  useViewContent(contentName);
+
   useEffect(() => {
     const w = window as unknown as Record<string, unknown>;
     if (w.fbq) return;

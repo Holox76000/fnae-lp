@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useViewContent } from "../ui/tracking";
 
 const BLUE = "#1A72B4";
 const BLUE_DARK = "#1565A0";
@@ -62,6 +63,8 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 export default function RecouvrementPage() {
   const [annual, setAnnual] = useState(true);
+
+  useViewContent("recouvrement_impayes");
 
   useEffect(() => {
     const w = window as any;
